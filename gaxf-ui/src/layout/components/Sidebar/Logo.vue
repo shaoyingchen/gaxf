@@ -10,8 +10,8 @@
         <svg-icon icon-class="dashboard" />
       </div>
       <div class="logo-text-area">
-        <h1 class="sidebar-title">智慧·公安</h1>
-        <p class="sidebar-subtitle">智能视频监控系统</p>
+        <h1 class="sidebar-title">智慧·信访</h1>
+        <p class="sidebar-subtitle">信访事项交办反馈系统</p>
       </div>
     </router-link>
   </div>

@@ -11,10 +11,10 @@
         <div class="hero-title">
           <div class="title-with-logo">
             <!-- 警徽图片动态绑定 -->
-            <img :src="policeLogo" alt="警徽" class="police-logo" />
-            <span class="hero-title-chinese">公安视频督察系统</span>
+            <!-- <img :src="policeLogo" alt="警徽" class="police-logo" /> -->
+            <span class="hero-title-chinese">信访事项交办反馈系统</span>
           </div>
-          <span class="hero-title-english">YANCHENG TRAFFIC CALENDAR</span>
+          <span class="hero-title-english">PETITION HANDLING AND FEEDBACK</span>
         </div>
         <div class="hero-decoration">
           <div class="line-bluewhite"></div>
@@ -28,7 +28,7 @@
         <div class="login-card">
           <div class="emblem">
             <i class="fas fa-building-columns"></i>
-            <h2>盐城交管</h2>
+            <h2>智慧信访</h2>
             <p>TRAFFIC MANAGEMENT LOGIN</p>
           </div>
 

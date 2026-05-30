@@ -7,8 +7,8 @@
           <LucideShield class="icon" />
         </div>
         <div class="logo-text">
-          <h2>智慧·公安</h2>
-          <p>智能视频监控系统</p>
+          <h2>智慧·信访</h2>
+          <p>信访事项交办反馈系统</p>
         </div>
       </div>
 

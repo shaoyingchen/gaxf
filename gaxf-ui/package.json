@@ -1,7 +1,7 @@
 {
   "name": "ruoyi",
   "version": "3.9.1",
-  "description": "智慧监控系统",
+  "description": "信访事项交办反馈系统",
   "author": "若依",
   "license": "MIT",
   "type": "module",

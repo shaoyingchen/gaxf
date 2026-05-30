@@ -11,7 +11,7 @@
           <div class="logo-glow"></div>
         </div>
         <div class="logo-text">
-          <h2>智慧·公安</h2>
+          <h2>智慧·信访</h2>
         </div>
       </div>
 
@@ -57,7 +57,7 @@
 
       <!-- 版本与版权信息 -->
       <div class="version-info">
-        <div class="version-text">智慧·公安 v1.0.0</div>
+        <div class="version-text">智慧·信访 v1.0.0</div>
         <div class="copyright">© 盐城南方软件</div>
       </div>
     </aside>
@@ -75,10 +75,10 @@
               </svg>
             </div>
             <div class="title-content">
-              <h2 class="main-title">盐城公安智能视频督察平台</h2>
+              <h2 class="main-title">信访事项交办反馈平台</h2>
               <div class="title-tags">
                 <span class="tag-item active">
-                  <span class="tag-dot"></span>实时态势感知
+                  <span class="tag-dot"></span>信访事项交办
                 </span>
                 <span class="tag-divider"></span>
                 <span class="tag-item">
