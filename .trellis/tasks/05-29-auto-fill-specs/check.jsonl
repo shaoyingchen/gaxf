@@ -1,0 +1,10 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend spec index for check agent reference"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "Verify error handling follows ServiceException + AjaxResult pattern"}
+{"file": ".trellis/spec/backend/database-guidelines.md", "reason": "Verify MyBatis patterns, pagination order, data scope filtering"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Check forbidden patterns, @PreAuthorize coverage, @Log on mutations"}
+{"file": ".trellis/spec/backend/logging-guidelines.md", "reason": "Verify no sensitive data in logs, proper log levels"}
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend spec index for check agent reference"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Verify script setup, v-hasPermi, scoped styles"}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "Verify no any types, proper API return types, type-backend correspondence"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Check forbidden patterns, permission strings match backend"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Verify cross-layer contracts: AjaxResult codes, permission strings, pagination"}

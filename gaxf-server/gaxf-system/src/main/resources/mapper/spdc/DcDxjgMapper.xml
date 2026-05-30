@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaxf.spdc.mapper.DcDxjgMapper">
+
+    <resultMap type="DcDxjg" id="DcDxjgResult">
+        <result property="id"    column="id"    />
+        <result property="orgid"    column="orgid"    />
+        <result property="warningtype"    column="warningtype"    />
+        <result property="policename"    column="policename"    />
+        <result property="countyname"    column="countyname"    />
+        <result property="orgtableid"    column="orgtableid"    />
+        <result property="time"    column="time"    />
+        <result property="state"    column="state"    />
+        <result property="msgtitle"    column="msgtitle"    />
+        <result property="pic1"    column="pic1"    />
+        <result property="pic2"    column="pic2"    />
+        <result property="type"    column="type"    />
+        <result property="acceptUserid"    column="accept_userid"    />
+        <result property="sendsate"    column="sendsate"    />
+        <result property="departId"    column="depart_id"    />
+        <result property="cameraId"    column="camera_id"    />
+        <result property="creator"    column="creator"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updater"    column="updater"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="deleted"    column="deleted"    />
+        <result property="eventCode"    column="event_code"    />
+        <result property="result"    column="result"    />
+        <result property="deal"    column="deal"    />
+        <result property="zoneType"    column="zone_type"    />
+        <result property="roomType"    column="room_type"    />
+        <result property="county"    column="county"    />
+        <result property="mainType"    column="main_type"    />
+        <result property="isResolved"    column="is_resolved"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="cameraName"    column="camera_name"    />
+        <result property="todayCount"    column="todayCount"    />
+        <result property="highCount"    column="highCount"    />
+        <result property="pendingCount"    column="pendingCount"    />
+        <result property="resolvedCount"    column="resolvedCount"    />
+    </resultMap>
+
+    <sql id="selectDcDxjgVo">
+        select d.id, d.orgid, d.warningtype, d.policename, d.countyname, d.orgtableid, d.time, d.state,
+               d.msgtitle, d.pic1, d.pic2, d.type, d.accept_userid, d.sendsate, d.depart_id, d.camera_id,
+               d.creator, d.create_time, d.updater, d.update_time, d.deleted, d.event_code, d.result, d.deal,
+               d.zone_type, d.room_type, d.county, d.main_type, d.is_resolved,
+               sd.dept_name as dept_name,
+               dc.name as camera_name
+        from dc_dxjg d
+        left join sys_dept sd on d.depart_id = sd.dept_id
+        left join dc_cameratable dc on d.camera_id = dc.id
+    </sql>
+
+    <select id="selectDcDxjgList" parameterType="DcDxjg" resultMap="DcDxjgResult">
+        <include refid="selectDcDxjgVo"/>
+        <where>
+            <if test="warningtype != null and warningtype != ''"> and d.warningtype = #{warningtype}</if>
+            <if test="type != null and type != ''"> and d.type = #{type}</if>
+            <if test="mainType != null and mainType != ''"> and d.main_type = #{mainType}</if>
+            <if test="deal != null and deal != ''"> and d.deal = #{deal}</if>
+            <if test="isResolved != null"> and d.is_resolved = #{isResolved}</if>
+            <if test="departId != null"> and d.depart_id = #{departId}</if>
+            <if test="cameraId != null"> and d.camera_id = #{cameraId}</if>
+            <if test="policename != null and policename != ''"> and d.policename like concat('%', #{policename}, '%')</if>
+            <if test="countyname != null and countyname != ''"> and d.countyname like concat('%', #{countyname}, '%')</if>
+            <if test="zoneType != null and zoneType != ''"> and d.zone_type = #{zoneType}</if>
+            <if test="roomType != null and roomType != ''"> and d.room_type = #{roomType}</if>
+            <if test="params.beginTime != null and params.beginTime != ''">
+                and date_format(d.time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''">
+                and date_format(d.time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+            <!-- 数据范围过滤：查询当前部门及下级部门的预警 -->
+            <if test="userDeptId != null and userDeptId != 0">
+                and (d.depart_id = #{userDeptId} or d.depart_id in (
+                    select dept_id from sys_dept where del_flag = '0' and find_in_set(#{userDeptId}, ancestors)
+                ))
+            </if>
+            and d.deleted = b'0'
+        </where>
+        order by d.time desc
+    </select>
+
+    <select id="selectDcDxjgById" parameterType="Integer" resultMap="DcDxjgResult">
+        <include refid="selectDcDxjgVo"/>
+        where d.id = #{id}
+    </select>
+
+    <select id="selectDcDxjgStatistics" parameterType="Long" resultMap="DcDxjgResult">
+        select
+            count(*) as todayCount,
+            sum(case when d.is_resolved = 1 and d.deal = '02' and d.deal != '01' then 1 else 0 end) as verifyCount,
+            sum(case when d.deal = '03' then 1 else 0 end) as pendingCount,
+            sum(case when d.deal = '02' then 1 else 0 end) as resolvedCount
+        from dc_dxjg d
+        <where>
+            <if test="userDeptId != null and userDeptId != 0">
+                and (d.depart_id = #{userDeptId} or d.depart_id in (
+                    select dept_id from sys_dept where del_flag = '0' and find_in_set(#{userDeptId}, ancestors)
+                ))
+            </if>
+            and d.deleted = b'0'
+        </where>
+    </select>
+
+    <insert id="insertDcDxjg" parameterType="DcDxjg" useGeneratedKeys="true" keyProperty="id">
+        insert into dc_dxjg
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orgid != null">orgid,</if>
+            <if test="warningtype != null">warningtype,</if>
+            <if test="policename != null">policename,</if>
+            <if test="countyname != null">countyname,</if>
+            <if test="orgtableid != null">orgtableid,</if>
+            <if test="time != null">time,</if>
+            <if test="state != null">state,</if>
+            <if test="msgtitle != null">msgtitle,</if>
+            <if test="pic1 != null">pic1,</if>
+            <if test="pic2 != null">pic2,</if>
+            <if test="type != null">type,</if>
+            <if test="acceptUserid != null">accept_userid,</if>
+            <if test="sendsate != null">sendsate,</if>
+            <if test="departId != null">depart_id,</if>
+            <if test="cameraId != null">camera_id,</if>
+            <if test="creator != null">creator,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="eventCode != null">event_code,</if>
+            <if test="deal != null">deal,</if>
+            <if test="zoneType != null">zone_type,</if>
+            <if test="roomType != null">room_type,</if>
+            <if test="county != null">county,</if>
+            <if test="mainType != null">main_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orgid != null">#{orgid},</if>
+            <if test="warningtype != null">#{warningtype},</if>
+            <if test="policename != null">#{policename},</if>
+            <if test="countyname != null">#{countyname},</if>
+            <if test="orgtableid != null">#{orgtableid},</if>
+            <if test="time != null">#{time},</if>
+            <if test="state != null">#{state},</if>
+            <if test="msgtitle != null">#{msgtitle},</if>
+            <if test="pic1 != null">#{pic1},</if>
+            <if test="pic2 != null">#{pic2},</if>
+            <if test="type != null">#{type},</if>
+            <if test="acceptUserid != null">#{acceptUserid},</if>
+            <if test="sendsate != null">#{sendsate},</if>
+            <if test="departId != null">#{departId},</if>
+            <if test="cameraId != null">#{cameraId},</if>
+            <if test="creator != null">#{creator},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="eventCode != null">#{eventCode},</if>
+            <if test="deal != null">#{deal},</if>
+            <if test="zoneType != null">#{zoneType},</if>
+            <if test="roomType != null">#{roomType},</if>
+            <if test="county != null">#{county},</if>
+            <if test="mainType != null">#{mainType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDcDxjg" parameterType="DcDxjg">
+        update dc_dxjg
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="warningtype != null">warningtype = #{warningtype},</if>
+            <if test="policename != null">policename = #{policename},</if>
+            <if test="countyname != null">countyname = #{countyname},</if>
+            <if test="time != null">time = #{time},</if>
+            <if test="state != null">state = #{state},</if>
+            <if test="msgtitle != null">msgtitle = #{msgtitle},</if>
+            <if test="pic1 != null">pic1 = #{pic1},</if>
+            <if test="pic2 != null">pic2 = #{pic2},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="acceptUserid != null">accept_userid = #{acceptUserid},</if>
+            <if test="sendsate != null">sendsate = #{sendsate},</if>
+            <if test="departId != null">depart_id = #{departId},</if>
+            <if test="cameraId != null">camera_id = #{cameraId},</if>
+            <if test="updater != null">updater = #{updater},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="result != null">result = #{result},</if>
+            <if test="deal != null">deal = #{deal},</if>
+            <if test="isResolved != null">is_resolved = #{isResolved},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDcDxjgById" parameterType="Integer">
+        update dc_dxjg set deleted = b'1' where id = #{id}
+    </delete>
+
+    <delete id="deleteDcDxjgByIds" parameterType="String">
+        update dc_dxjg set deleted = b'1' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

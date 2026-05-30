@@ -1,0 +1,1116 @@
+@use './police-theme.scss' as police;
+
+// =================================
+// 公安蓝主题 - 公安系统标准配色版
+// =================================
+// 配色要点:
+// 1. 侧边栏: #001529 深蓝背景，#1677FF 选中
+// 2. 按钮: #1677FF 主蓝色，#4096FF hover
+// 3. 表格: #FAFAFA 表头，#F5F5F5 hover
+// 4. 表单: #D1D5DB 边框，#1677FF focus
+// 5. 状态色: 红色仅用于删除/强操作
+
+// 主题类：应用公安蓝样式
+.police-theme,
+html.police-theme {
+
+  // ===== 基础变量 =====
+  --police-primary: #{police.$police-primary};
+  --police-blue: #{police.$police-blue};
+  --police-light: #{police.$police-light};
+  --police-hover: #{police.$police-hover};
+  --police-bg: #{police.$police-bg};
+  --police-card: #{police.$police-card};
+  --police-text: #{police.$police-text};
+  --police-text-sub: #{police.$police-text-muted};
+  --police-border: #{police.$police-border};
+
+  // ===== Element Plus 覆盖 =====
+  --el-color-primary: #{police.$police-blue};  // #1677FF
+  --el-color-primary-light-3: #{police.$police-hover};
+  --el-color-primary-light-5: #{police.$police-light};
+  --el-color-primary-light-7: #BAE7FF;
+  --el-color-primary-light-8: #E6F4FF;
+  --el-color-primary-light-9: #F0F8FF;
+  --el-color-primary-dark-2: #0958D9;
+
+  // 背景色
+  --el-bg-color: #{police.$police-bg};
+  --el-bg-color-page: #{police.$police-bg-alt};
+  --el-bg-color-overlay: #{police.$police-card};
+
+  // 文本色 (确保对比度 >= 4.5:1)
+  --el-text-color-primary: #{police.$police-text};
+  --el-text-color-regular: #{police.$police-text-secondary};
+  --el-text-color-secondary: #{police.$police-text-muted};
+  --el-text-color-placeholder: #{police.$police-text-light};
+
+  // 边框色 (Light mode 可见)
+  --el-border-color: #{police.$police-border};
+  --el-border-color-light: #{police.$police-border-light};
+  --el-border-color-lighter: #F3F4F6;
+  --el-border-color-extra-light: #F9FAFB;
+  --el-border-color-dark: #{police.$police-text-secondary};
+
+  // 状态色
+  --el-color-success: #{police.$police-success};
+  --el-color-warning: #{police.$police-warning};
+  --el-color-danger: #{police.$police-danger};
+  --el-color-info: #{police.$police-info};
+
+  // ===== 侧边栏变量 =====
+  --sidebar-bg: #{police.$police-primary};
+  --sidebar-text: #FFFFFF;
+  --sidebar-text-secondary: rgba(255, 255, 255, 0.65);
+  --menu-hover: rgba(255, 255, 255, 0.08);
+  --menu-active-bg: #{police.$police-blue};
+  --menu-active-text: #FFFFFF;
+  --menu-active-shadow: 0 4px 12px rgba(22, 119, 255, 0.3);
+
+  // ===== 导航栏变量 =====
+  --navbar-bg: #{police.$police-card};
+  --navbar-text: #{police.$police-text};
+  --navbar-border: #{police.$police-border-light};
+  --navbar-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+
+  // ===== 标签栏变量 =====
+  --tags-bg: #{police.$police-bg};
+  --tags-item-bg: #{police.$police-card};
+  --tags-item-border: #{police.$police-border-light};
+  --tags-item-text: #{police.$police-text-secondary};
+  --tags-item-active-bg: #{police.$police-light};
+  --tags-item-active-text: #{police.$police-primary};
+  --tags-item-active-border: #{police.$police-primary};
+
+  // ===== 阴影变量 =====
+  --police-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --police-card-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --police-card-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+
+  // ===== Focus Ring 变量 =====
+  --police-focus-ring: 0 0 0 2px #{police.$police-light}, 0 0 0 4px #{police.$police-blue};
+  --police-focus-ring-offset: 2px;
+
+  // ===== 动画时间 (150-300ms) =====
+  --police-transition-fast: 150ms;
+  --police-transition-normal: 200ms;
+  --police-transition-slow: 300ms;
+
+  // =================================
+  // 全局基础样式
+  // =================================
+
+  body {
+    font-family: police.$police-font-body;
+    line-height: 1.6;  // UX: 1.5-1.75 range
+  }
+
+  // 主容器背景
+  .app-container {
+    background: police.$police-bg;
+    min-height: 100vh;
+  }
+
+  // =================================
+  // Accessibility: Focus States
+  // =================================
+
+  // 所有可聚焦元素添加 focus ring
+  *:focus-visible {
+    outline: none;
+    box-shadow: var(--police-focus-ring);
+  }
+
+  // 按钮聚焦样式
+  button:focus-visible,
+  .el-button:focus-visible {
+    outline: none;
+    box-shadow: var(--police-focus-ring);
+  }
+
+  // 链接聚焦样式
+  a:focus-visible {
+    outline: none;
+    box-shadow: var(--police-focus-ring);
+    border-radius: 4px;
+  }
+
+  // =================================
+  // 卡片样式 - Glass Card Light Mode
+  // =================================
+
+  .el-card {
+    background: police.$police-card;
+    border: 1px solid police.$police-border-light;  // Light mode 边框可见
+    border-radius: 12px;
+    box-shadow: var(--police-card-shadow);
+    transition: box-shadow var(--police-transition-normal) ease,
+                transform var(--police-transition-normal) ease;
+
+    &:hover {
+      box-shadow: var(--police-card-shadow-md);
+    }
+
+    .el-card__header {
+      padding: 16px 20px;
+      border-bottom: 1px solid police.$police-border-light;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .el-card__body {
+      padding: 20px;
+    }
+  }
+
+  // =================================
+  // 侧边栏样式 - Touch Target 44px+
+  // =================================
+
+  .sidebar-container {
+    background: police.$police-primary;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+    border-right: none;
+
+    // Logo区域
+    .sidebar-logo-container {
+      background: rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+      .sidebar-title {
+        color: white;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        line-height: 1.5;
+      }
+    }
+
+    // 菜单项样式 - Touch Target 48px (>= 44px)
+    .el-menu {
+      background: transparent;
+      border: none;
+    }
+
+    .el-menu-item {
+      color: var(--sidebar-text);
+      font-weight: 700;
+      font-size: 13px;
+      line-height: 1.5;
+      border-radius: 12px;
+      margin: 4px 12px;
+      padding: 0 16px;
+      height: 48px;  // Touch Target: >= 44px
+      min-height: 48px;
+      cursor: pointer;  // UX: cursor-pointer on clickable
+      transition: background-color var(--police-transition-normal) ease,
+                  color var(--police-transition-normal) ease;
+
+      &:hover {
+        background: var(--menu-hover);
+        color: white;
+      }
+
+      &:focus-visible {
+        outline: none;
+        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.3);
+      }
+
+      // 活动状态
+      &.is-active {
+        background: var(--menu-active-bg);
+        color: var(--menu-active-text);
+        box-shadow: var(--menu-active-shadow);
+        border-right: none;
+
+        .svg-icon, .el-icon {
+          color: var(--menu-active-text);
+        }
+      }
+    }
+
+    // 子菜单样式
+    .el-sub-menu {
+      .el-sub-menu__title {
+        color: var(--sidebar-text);
+        font-weight: 700;
+        font-size: 13px;
+        line-height: 1.5;
+        border-radius: 12px;
+        margin: 4px 12px;
+        height: 48px;  // Touch Target: >= 44px
+        min-height: 48px;
+        cursor: pointer;
+
+        &:hover {
+          background: var(--menu-hover);
+          color: white;
+        }
+
+        &:focus-visible {
+          outline: none;
+          box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.3);
+        }
+      }
+
+      &.is-active > .el-sub-menu__title {
+        color: white;
+      }
+    }
+
+    // 嵌套菜单
+    .nest-menu .el-sub-menu > .el-sub-menu__title,
+    .el-sub-menu .el-menu-item {
+      background: rgba(0, 0, 0, 0.1);
+      margin: 2px 8px;
+      height: 44px;  // Touch Target: 44px
+      min-height: 44px;
+      cursor: pointer;
+
+      &:hover {
+        background: var(--menu-hover);
+      }
+    }
+
+    // 去除原有主题的边框样式
+    &.theme-dark .el-menu-item.is-active::before,
+    &.theme-dark .el-menu-item:not(.is-active)::before {
+      display: none;
+    }
+  }
+
+  // =================================
+  // 导航栏样式
+  // =================================
+
+  .navbar {
+    background: var(--navbar-bg);
+    border-bottom: 1px solid var(--navbar-border);
+    box-shadow: var(--navbar-shadow);
+
+    .el-breadcrumb {
+      .el-breadcrumb__inner {
+        color: police.$police-text;
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 1.4;
+      }
+    }
+
+    .right-menu {
+      .avatar-container {
+        .el-dropdown-link {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+
+          &:focus-visible {
+            outline: none;
+            box-shadow: var(--police-focus-ring);
+          }
+
+          .el-avatar {
+            background: police.$police-blue;
+            box-shadow: 0 2px 8px rgba(22, 119, 255, 0.3);
+            transition: transform var(--police-transition-normal) ease;
+            cursor: pointer;
+
+            &:hover {
+              transform: scale(1.05);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // =================================
+  // 标签栏样式 - Touch Target
+  // =================================
+
+  .tags-view-container {
+    background: var(--tags-bg);
+    border-bottom: 1px solid var(--navbar-border);
+    height: 40px;
+
+    .tags-view-item {
+      background: var(--tags-item-bg);
+      border: 1px solid var(--tags-item-border);
+      color: var(--tags-item-text);
+      border-radius: 6px;
+      padding: 0 12px;
+      height: 28px;
+      line-height: 28px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;  // UX: cursor-pointer
+      transition: background-color var(--police-transition-fast) ease,
+                  color var(--police-transition-fast) ease;
+
+      &:hover {
+        background: police.$police-light;
+        color: police.$police-primary;
+      }
+
+      &:focus-visible {
+        outline: none;
+        box-shadow: var(--police-focus-ring);
+      }
+
+      &.active {
+        background: var(--tags-item-active-bg);
+        border-color: var(--tags-item-active-border);
+        color: var(--tags-item-active-text);
+        font-weight: 700;
+      }
+    }
+  }
+
+  // =================================
+  // 按钮样式 - Touch Target + Animation
+  // =================================
+
+  .el-button {
+    border-radius: 8px;
+    font-weight: 700;
+    line-height: 1.5;
+    min-height: 36px;  // Touch Target (with padding >= 44px)
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color var(--police-transition-normal) ease,
+                border-color var(--police-transition-normal) ease,
+                box-shadow var(--police-transition-normal) ease;
+
+    // Hover 使用 opacity 而不是 transform (UX: avoid layout shift)
+    &:hover {
+      opacity: 0.9;
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--police-focus-ring);
+    }
+  }
+
+  // 主按钮
+  .el-button--primary {
+    background: police.$police-blue;
+    border-color: police.$police-blue;
+    color: white;
+
+    &:hover, &:focus {
+      background: police.$police-hover;
+      border-color: police.$police-hover;
+      box-shadow: 0 4px 12px rgba(22, 119, 255, 0.25);
+    }
+
+    &:active {
+      background: #0958D9;  // 深蓝按下状态
+    }
+  }
+
+  // 朴素按钮
+  .el-button--primary.is-plain {
+    background: police.$police-light;
+    border-color: police.$police-border;
+    color: police.$police-blue;
+
+    &:hover {
+      background: police.$police-blue;
+      border-color: police.$police-blue;
+      color: white;
+    }
+  }
+
+  // 成功按钮
+  .el-button--success {
+    background: #10B981;
+    border-color: #10B981;
+
+    &:hover {
+      background: #059669;
+      border-color: #059669;
+    }
+  }
+
+  // 警告按钮
+  .el-button--warning {
+    background: #F59E0B;
+    border-color: #F59E0B;
+
+    &:hover {
+      background: #D97706;
+      border-color: #D97706;
+    }
+  }
+
+  // 危险按钮
+  .el-button--danger {
+    background: #EF4444;
+    border-color: #EF4444;
+
+    &:hover {
+      background: #DC2626;
+      border-color: #DC2626;
+    }
+  }
+
+  // =================================
+  // 表格样式 - Typography
+  // =================================
+
+  .el-table {
+    background: police.$police-card;
+    border: 1px solid police.$police-border-light;
+    border-radius: 12px;
+    overflow: hidden;
+
+    .el-table__header-wrapper th {
+      background: #FAFAFA;  // 表头浅灰背景
+      color: police.$police-text;
+      font-weight: 700;
+      font-size: 13px;
+      line-height: 1.5;
+      border-bottom: 1px solid police.$police-border-light;
+      padding: 12px 16px;
+    }
+
+    .el-table__body-wrapper td {
+      padding: 12px 16px;
+      line-height: 1.6;
+    }
+
+    .el-table__row {
+      cursor: pointer;
+      transition: background-color var(--police-transition-fast) ease;
+
+      &:hover > td {
+        background: #F5F5F5 !important;  // hover 浅灰背景
+      }
+    }
+
+    --el-table-border-color: police.$police-border-light;
+  }
+
+  // =================================
+  // 表单样式 - Accessibility
+  // =================================
+
+  .el-form-item {
+    .el-form-item__label {
+      color: police.$police-text;
+      font-weight: 500;
+      line-height: 1.6;
+    }
+
+    .el-input__wrapper {
+      border-radius: 8px;
+      box-shadow: 0 0 0 1px police.$police-border-light inset;
+      transition: box-shadow var(--police-transition-fast) ease;
+
+      &:hover {
+        box-shadow: 0 0 0 1px police.$police-border inset;
+      }
+
+      &.is-focus {
+        box-shadow: 0 0 0 1px police.$police-blue inset,
+                    0 0 0 3px rgba(22, 119, 255, 0.1);
+      }
+    }
+
+    // 表单错误提示
+    .el-form-item__error {
+      color: #EF4444;
+      font-size: 12px;
+      line-height: 1.5;
+      padding-top: 4px;
+    }
+  }
+
+  // =================================
+  // 对话框样式
+  // =================================
+
+  .el-dialog {
+    border-radius: 16px;
+    border: 1px solid police.$police-border-light;
+    box-shadow: var(--police-card-shadow-lg);
+
+    .el-dialog__header {
+      padding: 20px;
+      border-bottom: 1px solid police.$police-border-light;
+
+      .el-dialog__title {
+        color: police.$police-text;
+        font-weight: 700;
+        line-height: 1.5;
+      }
+    }
+
+    .el-dialog__body {
+      padding: 20px;
+    }
+
+    .el-dialog__footer {
+      padding: 16px 20px;
+      border-top: 1px solid police.$police-border-light;
+      background: police.$police-bg;
+    }
+  }
+
+  // =================================
+  // 标签样式
+  // =================================
+
+  .el-tag {
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 0 8px;
+    height: 22px;
+    line-height: 22px;
+    border: none;
+    cursor: default;
+  }
+
+  .el-tag--primary {
+    background: rgba(22, 119, 255, 0.15);  // 增加透明度确保可见
+    color: police.$police-blue;
+  }
+
+  .el-tag--success {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10B981;
+  }
+
+  .el-tag--warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: #F59E0B;
+  }
+
+  .el-tag--danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #EF4444;
+  }
+
+  .el-tag--info {
+    background: rgba(100, 116, 139, 0.15);
+    color: #64748B;
+  }
+
+  // =================================
+  // 分页样式 - Touch Target
+  // =================================
+
+  .el-pagination {
+    .el-pager li {
+      font-weight: 700;
+      border-radius: 6px;
+      margin: 0 2px;
+      min-width: 36px;  // Touch Target consideration
+      height: 36px;
+      line-height: 36px;
+      cursor: pointer;
+      transition: background-color var(--police-transition-fast) ease;
+
+      &:hover {
+        color: police.$police-blue;
+      }
+
+      &:focus-visible {
+        outline: none;
+        box-shadow: var(--police-focus-ring);
+      }
+
+      &.is-active {
+        background: police.$police-blue;
+        color: white;
+      }
+    }
+
+    .btn-prev, .btn-next {
+      min-width: 36px;
+      height: 36px;
+      cursor: pointer;
+
+      &:hover {
+        color: police.$police-blue;
+      }
+
+      &:focus-visible {
+        outline: none;
+        box-shadow: var(--police-focus-ring);
+      }
+    }
+  }
+
+  // =================================
+  // 树组件样式
+  // =================================
+
+  .el-tree {
+    .el-tree-node.is-current > .el-tree-node__content {
+      background: police.$police-light;
+      color: police.$police-blue;
+      font-weight: 700;
+      border-radius: 6px;
+    }
+
+    .el-tree-node__content {
+      cursor: pointer;
+      transition: background-color var(--police-transition-fast) ease;
+
+      &:hover {
+        background: police.$police-light;
+        border-radius: 6px;
+      }
+
+      &:focus-visible {
+        outline: none;
+        box-shadow: var(--police-focus-ring);
+      }
+    }
+  }
+
+  // =================================
+  // 统计卡片 - Hover Performance
+  // =================================
+
+  .police-stat-card {
+    background: police.$police-card;
+    border: 1px solid police.$police-border-light;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--police-card-shadow);
+    cursor: pointer;
+    // Hover 使用 transform 而不是 box-shadow 变化
+    transition: transform var(--police-transition-normal) ease,
+                box-shadow var(--police-transition-normal) ease;
+
+    &:hover {
+      transform: translateY(-2px);  // 使用 transform (性能优化)
+      box-shadow: var(--police-card-shadow-md);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--police-focus-ring);
+    }
+
+    .stat-icon {
+      padding: 10px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-change {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      line-height: 1.4;
+
+      &.positive {
+        background: rgba(16, 185, 129, 0.15);
+        color: #10B981;
+      }
+
+      &.negative {
+        background: rgba(239, 68, 68, 0.15);
+        color: #EF4444;
+      }
+    }
+
+    .stat-label {
+      color: police.$police-text-muted;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: police.$police-text;
+      line-height: 1.4;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  // =================================
+  // 实时动态列表
+  // =================================
+
+  .police-activity-list {
+    .activity-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .activity-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        flex-shrink: 0;
+        line-height: 32px;
+
+        &.alert {
+          background: rgba(239, 68, 68, 0.15);
+          color: #EF4444;
+        }
+
+        &.info {
+          background: rgba(22, 119, 255, 0.15);
+          color: police.$police-blue;
+        }
+      }
+
+      .activity-content {
+        flex: 1;
+        min-width: 0;
+
+        .activity-text {
+          font-size: 12px;
+          color: police.$police-text;
+          line-height: 1.6;
+
+          .actor {
+            font-weight: 700;
+          }
+
+          .action {
+            color: police.$police-text-muted;
+            margin: 0 4px;
+          }
+
+          .target {
+            color: police.$police-primary;
+            font-weight: 500;
+          }
+        }
+
+        .activity-time {
+          font-size: 10px;
+          color: police.$police-text-muted;
+          margin-top: 4px;
+          line-height: 1.5;
+        }
+      }
+    }
+  }
+
+  // =================================
+  // 图表容器
+  // =================================
+
+  .police-chart-container {
+    background: police.$police-card;
+    border: 1px solid police.$police-border-light;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--police-card-shadow);
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+
+      .chart-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: police.$police-text;
+        line-height: 1.5;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .chart-tabs {
+        display: flex;
+        gap: 8px;
+
+        button {
+          font-size: 11px;
+          font-weight: 700;
+          padding: 4px 12px;
+          border-radius: 6px;
+          border: none;
+          background: police.$police-bg;
+          color: police.$police-text-muted;
+          cursor: pointer;
+          line-height: 1.5;
+          transition: background-color var(--police-transition-fast) ease;
+
+          &.active {
+            background: police.$police-blue;
+            color: white;
+          }
+
+          &:focus-visible {
+            outline: none;
+            box-shadow: var(--police-focus-ring);
+          }
+        }
+      }
+    }
+  }
+
+  // =================================
+  // 视频监控网格 - Reduced Motion
+  // =================================
+
+  .police-video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+
+    .video-item {
+      aspect-ratio: 16/9;
+      background: black;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: border-color var(--police-transition-normal) ease;
+
+      &:hover {
+        border-color: police.$police-blue;
+      }
+
+      &:focus-visible {
+        outline: none;
+        box-shadow: var(--police-focus-ring);
+      }
+
+      .video-placeholder {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .play-icon {
+          color: rgba(255, 255, 255, 0.2);
+          transition: color var(--police-transition-normal) ease;
+          cursor: pointer;
+
+          &:hover {
+            color: rgba(255, 255, 255, 0.6);
+          }
+        }
+      }
+
+      .video-label {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        padding: 4px 8px;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        border-radius: 4px;
+        font-size: 10px;
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        line-height: 1.5;
+      }
+
+      .video-controls {
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        opacity: 0;
+        transition: opacity var(--police-transition-normal) ease;
+
+        button {
+          padding: 6px;
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 4px;
+          color: white;
+          border: none;
+          cursor: pointer;
+          min-width: 32px;  // Touch Target consideration
+          min-height: 32px;
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.4);
+          }
+        }
+      }
+
+      &:hover .video-controls {
+        opacity: 1;
+      }
+    }
+  }
+
+  // =================================
+  // 存储进度条
+  // =================================
+
+  .police-storage-card {
+    background: rgba(255, 255, 255, 0.08);  // Light mode 可见
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 16px;
+
+    .storage-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .storage-bar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      overflow: hidden;
+
+      .storage-progress {
+        height: 100%;
+        background: #10B981;
+        border-radius: 6px;
+        transition: width var(--police-transition-slow) ease;
+      }
+    }
+
+    .storage-text {
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.4);
+      text-align: right;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+  }
+
+  // =================================
+  // Reduced Motion Support (Accessibility)
+  // =================================
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    .el-button:hover,
+    .police-stat-card:hover,
+    .video-item:hover {
+      transform: none;
+    }
+  }
+
+  // =================================
+  // Z-Index Management (UX Rule)
+  // =================================
+  // Scale: 10 (base), 20 (dropdown), 30 (modal), 50 (toast/notification)
+
+  .el-dialog {
+    z-index: 30;
+  }
+
+  .el-dropdown-menu {
+    z-index: 20;
+  }
+
+  .el-message,
+  .el-notification {
+    z-index: 50;
+  }
+}
+
+// =================================
+// 暗黑模式下的公安蓝主题
+// =================================
+
+html.police-theme.dark {
+  --el-bg-color: #0F172A;
+  --el-bg-color-page: #1E293B;
+  --el-bg-color-overlay: #334155;
+
+  --police-bg: #0F172A;
+  --police-card: #1E293B;
+
+  --el-text-color-primary: #F1F5F9;
+  --el-text-color-regular: #E2E8F0;
+  --el-text-color-secondary: #94A3B8;
+
+  --el-border-color: #475569;
+  --el-border-color-light: #334155;
+
+  --sidebar-bg: #{police.$police-primary};
+
+  --navbar-bg: #1E293B;
+  --navbar-border: #334155;
+
+  // Focus ring 暗黑模式
+  --police-focus-ring: 0 0 0 2px #{police.$police-light}, 0 0 0 4px #{police.$police-blue};
+
+  .el-table {
+    background: #1E293B;
+
+    .el-table__header-wrapper th {
+      background: #0F172A;
+      color: #E2E8F0;
+    }
+  }
+
+  .el-card {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  .police-stat-card {
+    background: #1E293B;
+    border-color: #334155;
+
+    .stat-value {
+      color: #F1F5F9;
+    }
+  }
+
+  .police-chart-container {
+    background: #1E293B;
+    border-color: #334155;
+
+    .chart-tabs button {
+      background: #0F172A;
+      color: #94A3B8;
+
+      &.active {
+        background: #{police.$police-blue};
+        color: white;
+      }
+    }
+  }
+
+  // Glass card 暗黑模式
+  .el-card,
+  .police-stat-card,
+  .police-chart-container {
+    background: rgba(0, 21, 41, 0.15);  // 暗黑 glass 效果
+  }
+}

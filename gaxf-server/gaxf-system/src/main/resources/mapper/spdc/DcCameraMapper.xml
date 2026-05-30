@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaxf.spdc.mapper.DcCameraMapper">
+
+    <resultMap type="DcCamera" id="DcCameraResult">
+        <result property="pointId"    column="id"    />
+        <result property="gbCode"    column="gbcode"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="shorttext"    />
+        <result property="pointName"    column="name"    />
+        <result property="roomKind"    column="roomkind"    />
+        <result property="zoneTypeId"    column="zonetype_id"    />
+        <result property="zoneType"    column="zonetype"    />
+        <result property="upAlarm"    column="upalarm"    />
+        <result property="ipAddress"    column="ip"    />
+        <result property="port"    column="port"    />
+        <result property="username"    column="dvrname"    />
+        <result property="password"    column="dvrpassword"    />
+        <result property="channelNo"    column="dvrinput"    />
+        <result property="cameraType"    column="dvrkind"    />
+        <result property="county"    column="county"    />
+        <result property="city"    column="city"    />
+        <result property="jz"    column="jz"    />
+        <result property="pointStatus"    column="state"    />
+        <result property="connState"    column="connstate"    />
+        <result property="personNum"    column="person_num"    />
+        <result property="code"    column="code"    />
+        <result property="gbState"    column="gbstate"    />
+        <result property="parentCode"    column="parentcode"    />
+        <result property="detect"    column="detect"    />
+        <result property="mustAcc"    column="must_acc"    />
+        <result property="detectTag"    column="detect_tag"    />
+        <result property="cCount"    column="c_count"    />
+        <result property="dutyUser"    column="duty_user"    />
+        <result property="dutyTel"    column="duty_tel"    />
+        <result property="remark"    column="detect_tag"    />
+        <result property="createBy"    column="creator"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="updater"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="delFlag"    column="deleted"    />
+        <result property="enable"    column="enable"    />
+    </resultMap>
+
+    <sql id="selectDcCameraVo">
+        select id, gbcode, dept_id, shorttext, name, roomkind, zonetype_id, zonetype, upalarm, ip, port, dvrname, dvrpassword, dvrinput, dvrkind, county, city, jz, state, connstate, person_num, code, gbstate, parentcode, detect, must_acc, detect_tag, c_count, duty_user, duty_tel, creator, create_time, updater, update_time, deleted, enable from dc_cameratable
+    </sql>
+
+    <select id="selectDcCameraList" parameterType="DcCamera" resultMap="DcCameraResult">
+        <include refid="selectDcCameraVo"/>
+        <where>
+            <if test="gbCode != null  and gbCode != ''"> and gbcode = #{gbCode}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''"> and shorttext like concat('%', #{deptName}, '%')</if>
+            <if test="pointName != null  and pointName != ''"> and name like concat('%', #{pointName}, '%')</if>
+            <if test="roomKind != null  and roomKind != ''"> and roomkind = #{roomKind}</if>
+            <if test="zoneType != null  and zoneType != ''"> and zonetype = #{zoneType}</if>
+            <if test="upAlarm != null "> and upalarm = #{upAlarm}</if>
+            <if test="pointStatus != null "> and state = #{pointStatus}</if>
+            <if test="cameraType != null "> and dvrkind = #{cameraType}</if>
+            <if test="ipAddress != null  and ipAddress != ''"> and ip = #{ipAddress}</if>
+            <if test="port != null  and port != ''"> and port = #{port}</if>
+            <if test="username != null  and username != ''"> and dvrname like concat('%', #{username}, '%')</if>
+            <if test="password != null  and password != ''"> and dvrpassword = #{password}</if>
+            <if test="channelNo != null "> and dvrinput = #{channelNo}</if>
+            <if test="code != null  and code != ''"> and code = #{code}</if>
+            <if test="detect != null "> and detect = #{detect}</if>
+            <if test="dutyUser != null  and dutyUser != ''"> and duty_user like concat('%', #{dutyUser}, '%')</if>
+            <if test="enable != null "> and enable = #{enable}</if>
+            <!-- 数据范围过滤：查询当前部门及下级部门的点位 -->
+            <if test="userDeptId != null and userDeptId != 0">
+                and (dept_id = #{userDeptId} or dept_id in (select dept_id from sys_dept where del_flag = '0' and find_in_set(#{userDeptId}, ancestors)))
+            </if>
+            and deleted = b'0'
+        </where>
+    </select>
+
+    <select id="selectDcCameraByPointId" parameterType="Integer" resultMap="DcCameraResult">
+        <include refid="selectDcCameraVo"/>
+        where id = #{pointId}
+    </select>
+
+    <insert id="insertDcCamera" parameterType="DcCamera" useGeneratedKeys="true" keyProperty="pointId">
+        insert into dc_cameratable
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="gbCode != null">gbcode,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="deptName != null">shorttext,</if>
+            <if test="pointName != null and pointName != ''">name,</if>
+            <if test="roomKind != null">roomkind,</if>
+            <if test="zoneTypeId != null">zonetype_id,</if>
+            <if test="zoneType != null">zonetype,</if>
+            <if test="upAlarm != null">upalarm,</if>
+            <if test="ipAddress != null">ip,</if>
+            <if test="port != null">port,</if>
+            <if test="username != null">dvrname,</if>
+            <if test="password != null">dvrpassword,</if>
+            <if test="channelNo != null">dvrinput,</if>
+            <if test="cameraType != null">dvrkind,</if>
+            <if test="county != null">county,</if>
+            <if test="city != null">city,</if>
+            <if test="jz != null">jz,</if>
+            <if test="pointStatus != null">state,</if>
+            <if test="connState != null">connstate,</if>
+            <if test="personNum != null">person_num,</if>
+            <if test="code != null">code,</if>
+            <if test="gbState != null">gbstate,</if>
+            <if test="parentCode != null">parentcode,</if>
+            <if test="detect != null">detect,</if>
+            <if test="mustAcc != null">must_acc,</if>
+            <if test="detectTag != null">detect_tag,</if>
+            <if test="cCount != null">c_count,</if>
+            <if test="dutyUser != null">duty_user,</if>
+            <if test="dutyTel != null">duty_tel,</if>
+            <if test="createBy != null">creator,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">updater,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="delFlag != null">deleted,</if>
+            <if test="enable != null">enable,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="gbCode != null">#{gbCode},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="pointName != null and pointName != ''">#{pointName},</if>
+            <if test="roomKind != null">#{roomKind},</if>
+            <if test="zoneTypeId != null">#{zoneTypeId},</if>
+            <if test="zoneType != null">#{zoneType},</if>
+            <if test="upAlarm != null">#{upAlarm},</if>
+            <if test="ipAddress != null">#{ipAddress},</if>
+            <if test="port != null">#{port},</if>
+            <if test="username != null">#{username},</if>
+            <if test="password != null">#{password},</if>
+            <if test="channelNo != null">#{channelNo},</if>
+            <if test="cameraType != null">#{cameraType},</if>
+            <if test="county != null">#{county},</if>
+            <if test="city != null">#{city},</if>
+            <if test="jz != null">#{jz},</if>
+            <if test="pointStatus != null">#{pointStatus},</if>
+            <if test="connState != null">#{connState},</if>
+            <if test="personNum != null">#{personNum},</if>
+            <if test="code != null">#{code},</if>
+            <if test="gbState != null">#{gbState},</if>
+            <if test="parentCode != null">#{parentCode},</if>
+            <if test="detect != null">#{detect},</if>
+            <if test="mustAcc != null">#{mustAcc},</if>
+            <if test="detectTag != null">#{detectTag},</if>
+            <if test="cCount != null">#{cCount},</if>
+            <if test="dutyUser != null">#{dutyUser},</if>
+            <if test="dutyTel != null">#{dutyTel},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="enable != null">#{enable},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDcCamera" parameterType="DcCamera">
+        update dc_cameratable
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="gbCode != null">gbcode = #{gbCode},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="deptName != null">shorttext = #{deptName},</if>
+            <if test="pointName != null and pointName != ''">name = #{pointName},</if>
+            <if test="roomKind != null">roomkind = #{roomKind},</if>
+            <if test="zoneTypeId != null">zonetype_id = #{zoneTypeId},</if>
+            <if test="zoneType != null">zonetype = #{zoneType},</if>
+            <if test="upAlarm != null">upalarm = #{upAlarm},</if>
+            <if test="ipAddress != null">ip = #{ipAddress},</if>
+            <if test="port != null">port = #{port},</if>
+            <if test="username != null">dvrname = #{username},</if>
+            <if test="password != null">dvrpassword = #{password},</if>
+            <if test="channelNo != null">dvrinput = #{channelNo},</if>
+            <if test="cameraType != null">dvrkind = #{cameraType},</if>
+            <if test="county != null">county = #{county},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="jz != null">jz = #{jz},</if>
+            <if test="pointStatus != null">state = #{pointStatus},</if>
+            <if test="connState != null">connstate = #{connState},</if>
+            <if test="personNum != null">person_num = #{personNum},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="gbState != null">gbstate = #{gbState},</if>
+            <if test="parentCode != null">parentcode = #{parentCode},</if>
+            <if test="detect != null">detect = #{detect},</if>
+            <if test="mustAcc != null">must_acc = #{mustAcc},</if>
+            <if test="detectTag != null">detect_tag = #{detectTag},</if>
+            <if test="cCount != null">c_count = #{cCount},</if>
+            <if test="dutyUser != null">duty_user = #{dutyUser},</if>
+            <if test="dutyTel != null">duty_tel = #{dutyTel},</if>
+            <if test="createBy != null">creator = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">updater = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="delFlag != null">deleted = #{delFlag},</if>
+            <if test="enable != null">enable = #{enable},</if>
+        </trim>
+        where id = #{pointId}
+    </update>
+
+    <delete id="deleteDcCameraByPointId" parameterType="Integer">
+        update dc_cameratable set deleted = b'1' where id = #{pointId}
+    </delete>
+
+    <delete id="deleteDcCameraByPointIds" parameterType="String">
+        update dc_cameratable set deleted = b'1' where id in
+        <foreach item="pointId" collection="array" open="(" separator="," close=")">
+            #{pointId}
+        </foreach>
+    </delete>
+</mapper>

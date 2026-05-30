@@ -1,0 +1,76 @@
+// 公安蓝主题变量 - 公安系统标准配色
+// ================================
+// 设计理念：沉稳专业、清晰易读
+// 侧边栏：深蓝 #001529
+// 交互色：标准蓝 #1677FF（按钮、活动状态、focus）
+// 背景：浅灰 #F5F5F5
+// 表格表头：#FAFAFA，hover：#F5F5F5
+
+// 公安蓝核心色系
+$police-primary: #001529;      // 深蓝 - 侧边栏背景（公安系统标准）
+$police-blue: #1677FF;         // 标准蓝 - 按钮、活动状态、focus
+$police-light: #E6F4FF;        // 浅蓝背景 - hover、选中
+$police-hover: #4096FF;        // hover状态
+$police-accent: #1677FF;       // 辅助色 - 与主色统一
+
+// 背景色系
+$police-bg: #F5F5F5;           // 主背景 - 浅灰
+$police-bg-alt: #FAFAFA;       // 次背景 - 表头使用
+$police-card: #FFFFFF;         // 卡片背景
+$police-panel: #FAFBFC;        // 面板背景
+
+// 文本色系
+$police-text: #1F2937;         // 主文本 - 深灰
+$police-text-secondary: #4B5563; // 次文本
+$police-text-muted: #6B7280;   // 弱化文本
+$police-text-light: #9CA3AF;   // 提示文本
+
+// 边框色系
+$police-border: #D1D5DB;       // 主边框 - 表单输入框
+$police-border-light: #E5E7EB; // 浅边框 - 表格边框
+
+// 侧边栏色系（公安系统标准）
+$police-sidebar-bg: $police-primary;       // #001529 深蓝
+$police-sidebar-text: #FFFFFF;             // 白色文字（非半透明）
+$police-sidebar-text-secondary: rgba(255, 255, 255, 0.65);
+$police-sidebar-hover: rgba(255, 255, 255, 0.08);
+$police-sidebar-active-bg: $police-blue;   // #1677FF 选中背景
+$police-sidebar-active-text: #FFFFFF;      // 选中文字白色
+
+// 状态色系（Gemini 风格）
+$police-success: #10B981;      // 成功 - 翠绿
+$police-warning: #F59E0B;      // 警告 - 橙黄
+$police-danger: #EF4444;       // 危险 - 红色
+$police-info: #64748B;         // 信息 - 灰蓝
+
+// 图表颜色（Gemini 风格）
+$police-chart-blue: $police-blue;
+$police-chart-cyan: #06B6D4;
+$police-chart-indigo: #6366F1;
+
+// 阴影（Gemini 风格）
+$police-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+$police-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+$police-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+
+// 字体设置（现代简洁）
+$police-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$police-font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+// 导出变量
+:export {
+  policePrimary: $police-primary;
+  policeBlue: $police-blue;
+  policeLight: $police-light;
+  policeHover: $police-hover;
+  policeBg: $police-bg;
+  policeBgAlt: $police-bg-alt;
+  policeCard: $police-card;
+  policeText: $police-text;
+  policeTextMuted: $police-text-muted;
+  policeBorder: $police-border;
+  policeBorderLight: $police-border-light;
+  policeSuccess: $police-success;
+  policeWarning: $police-warning;
+  policeDanger: $police-danger;
+}

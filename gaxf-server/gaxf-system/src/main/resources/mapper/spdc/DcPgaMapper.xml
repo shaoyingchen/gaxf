@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaxf.spdc.mapper.DcPgaMapper">
+
+    <resultMap type="DcPga" id="DcPgaResult">
+        <result property="id"    column="id"    />
+        <result property="dxjgId"    column="dxjg_id"    />
+        <result property="problemDepart"    column="problem_depart"    />
+        <result property="dealtype"    column="dealtype"    />
+        <result property="wtxz"    column="wtxz"    />
+        <result property="adjust"    column="adjust"    />
+        <result property="dealPropose"    column="deal_propose"    />
+        <result property="typeLevelone"    column="type_levelone"    />
+        <result property="typeLeveltwo"    column="type_leveltwo"    />
+        <result property="pic1"    column="pic1"    />
+        <result property="fujian"    column="fujian"    />
+        <result property="camareCode"    column="camare_code"    />
+        <result property="problemMsg"    column="problem_msg"    />
+        <result property="findtime"    column="findtime"    />
+        <result property="countyname"    column="countyname"    />
+        <result property="policename"    column="policename"    />
+        <result property="danweiallname"    column="danweiallname"    />
+        <result property="jz"    column="jz"    />
+        <result property="orgcode"    column="orgcode"    />
+        <result property="state"    column="state"    />
+        <result property="dealTime"    column="deal_time"    />
+        <result property="dealState"    column="deal_state"    />
+        <result property="dealPic"    column="deal_pic"    />
+        <result property="dealFujian"    column="deal_fujian"    />
+        <result property="deadline"    column="deadline"    />
+        <result property="dealConent"    column="deal_conent"    />
+        <result property="departId"    column="depart_id"    />
+        <result property="camareId"    column="camare_id"    />
+        <result property="typeLeveloneCode"    column="type_levelone_code"    />
+        <result property="typeLeveltwoCode"    column="type_leveltwo_code"    />
+        <result property="status"    column="status"    />
+        <result property="aduitStatus"    column="aduit_status"    />
+        <result property="remark"    column="remark"    />
+        <result property="receiveDeptId"    column="receive_dept_id"    />
+        <result property="result"    column="result"    />
+        <result property="creator"    column="creator"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updater"    column="updater"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="deleted"    column="deleted"    />
+        <result property="deptName"    column="dept_name"    />
+    </resultMap>
+
+    <sql id="selectDcPgaVo">
+        select p.id, p.dxjg_id, p.problem_depart, p.dealtype, p.wtxz, p.adjust, p.deal_propose,
+               p.type_levelone, p.type_leveltwo, p.pic1, p.fujian, p.camare_code, p.problem_msg,
+               p.findtime, p.countyname, p.policename, p.danweiallname, p.jz, p.orgcode, p.state,
+               p.deal_time, p.deal_state, p.deal_pic, p.deal_fujian, p.deadline, p.deal_conent,
+               p.depart_id, p.camare_id, p.type_levelone_code, p.type_leveltwo_code, p.status,
+               p.aduit_status, p.remark, p.receive_dept_id, p.result, p.creator, p.create_time,
+               p.updater, p.update_time, p.deleted,
+               sd.dept_name as dept_name
+        from dc_pga p
+        left join sys_dept sd on p.depart_id = sd.dept_id
+    </sql>
+
+    <select id="selectDcPgaList" parameterType="DcPga" resultMap="DcPgaResult">
+        <include refid="selectDcPgaVo"/>
+        <where>
+            <if test="problemDepart != null and problemDepart != ''"> and p.problem_depart like concat('%', #{problemDepart}, '%')</if>
+            <if test="dealtype != null and dealtype != ''"> and p.dealtype = #{dealtype}</if>
+            <if test="wtxz != null and wtxz != ''"> and p.wtxz = #{wtxz}</if>
+            <if test="state != null and state != ''"> and p.state = #{state}</if>
+            <if test="dealState != null and dealState != ''"> and p.deal_state = #{dealState}</if>
+            <if test="departId != null"> and p.depart_id = #{departId}</if>
+            <if test="status != null"> and p.status = #{status}</if>
+            <if test="aduitStatus != null"> and p.aduit_status = #{aduitStatus}</if>
+            <if test="params.beginTime != null and params.beginTime != ''">
+                and date_format(p.findtime,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''">
+                and date_format(p.findtime,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+            <!-- 数据范围过滤 -->
+            <if test="userDeptId != null and userDeptId != 0">
+                and (p.depart_id = #{userDeptId} or p.depart_id in (
+                    select dept_id from sys_dept where del_flag = '0' and find_in_set(#{userDeptId}, ancestors)
+                ))
+            </if>
+            and p.deleted = b'0'
+        </where>
+        order by p.create_time desc
+    </select>
+
+    <select id="selectDcPgaById" parameterType="Integer" resultMap="DcPgaResult">
+        <include refid="selectDcPgaVo"/>
+        where p.id = #{id}
+    </select>
+
+    <insert id="insertDcPga" parameterType="DcPga" useGeneratedKeys="true" keyProperty="id">
+        insert into dc_pga
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dxjgId != null">dxjg_id,</if>
+            <if test="problemDepart != null">problem_depart,</if>
+            <if test="dealtype != null">dealtype,</if>
+            <if test="wtxz != null">wtxz,</if>
+            <if test="adjust != null">adjust,</if>
+            <if test="dealPropose != null">deal_propose,</if>
+            <if test="typeLevelone != null">type_levelone,</if>
+            <if test="typeLeveltwo != null">type_leveltwo,</if>
+            <if test="pic1 != null">pic1,</if>
+            <if test="fujian != null">fujian,</if>
+            <if test="camareCode != null">camare_code,</if>
+            <if test="problemMsg != null">problem_msg,</if>
+            <if test="findtime != null">findtime,</if>
+            <if test="countyname != null">countyname,</if>
+            <if test="policename != null">policename,</if>
+            <if test="danweiallname != null">danweiallname,</if>
+            <if test="jz != null">jz,</if>
+            <if test="orgcode != null">orgcode,</if>
+            <if test="state != null">state,</if>
+            <if test="dealTime != null">deal_time,</if>
+            <if test="departId != null">depart_id,</if>
+            <if test="camareId != null">camare_id,</if>
+            <if test="typeLeveloneCode != null">type_levelone_code,</if>
+            <if test="typeLeveltwoCode != null">type_leveltwo_code,</if>
+            <if test="status != null">status,</if>
+            <if test="deadline != null">deadline,</if>
+            <if test="creator != null">creator,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dxjgId != null">#{dxjgId},</if>
+            <if test="problemDepart != null">#{problemDepart},</if>
+            <if test="dealtype != null">#{dealtype},</if>
+            <if test="wtxz != null">#{wtxz},</if>
+            <if test="adjust != null">#{adjust},</if>
+            <if test="dealPropose != null">#{dealPropose},</if>
+            <if test="typeLevelone != null">#{typeLevelone},</if>
+            <if test="typeLeveltwo != null">#{typeLeveltwo},</if>
+            <if test="pic1 != null">#{pic1},</if>
+            <if test="fujian != null">#{fujian},</if>
+            <if test="camareCode != null">#{camareCode},</if>
+            <if test="problemMsg != null">#{problemMsg},</if>
+            <if test="findtime != null">#{findtime},</if>
+            <if test="countyname != null">#{countyname},</if>
+            <if test="policename != null">#{policename},</if>
+            <if test="danweiallname != null">#{danweiallname},</if>
+            <if test="jz != null">#{jz},</if>
+            <if test="orgcode != null">#{orgcode},</if>
+            <if test="state != null">#{state},</if>
+            <if test="dealTime != null">#{dealTime},</if>
+            <if test="departId != null">#{departId},</if>
+            <if test="camareId != null">#{camareId},</if>
+            <if test="typeLeveloneCode != null">#{typeLeveloneCode},</if>
+            <if test="typeLeveltwoCode != null">#{typeLeveltwoCode},</if>
+            <if test="status != null">#{status},</if>
+            <if test="deadline != null">#{deadline},</if>
+            <if test="creator != null">#{creator},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDcPga" parameterType="DcPga">
+        update dc_pga
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dealtype != null">dealtype = #{dealtype},</if>
+            <if test="wtxz != null">wtxz = #{wtxz},</if>
+            <if test="adjust != null">adjust = #{adjust},</if>
+            <if test="dealPropose != null">deal_propose = #{dealPropose},</if>
+            <if test="typeLevelone != null">type_levelone = #{typeLevelone},</if>
+            <if test="typeLeveltwo != null">type_leveltwo = #{typeLeveltwo},</if>
+            <if test="fujian != null">fujian = #{fujian},</if>
+            <if test="state != null">state = #{state},</if>
+            <if test="dealState != null">deal_state = #{dealState},</if>
+            <if test="dealPic != null">deal_pic = #{dealPic},</if>
+            <if test="dealFujian != null">deal_fujian = #{dealFujian},</if>
+            <if test="dealConent != null">deal_conent = #{dealConent},</if>
+            <if test="deadline != null">deadline = #{deadline},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="aduitStatus != null">aduit_status = #{aduitStatus},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="result != null">result = #{result},</if>
+            <if test="updater != null">updater = #{updater},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDcPgaById" parameterType="Integer">
+        update dc_pga set deleted = b'1' where id = #{id}
+    </delete>
+
+    <delete id="deleteDcPgaByIds" parameterType="String">
+        update dc_pga set deleted = b'1' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

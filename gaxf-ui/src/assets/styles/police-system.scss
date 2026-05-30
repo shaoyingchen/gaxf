@@ -1,0 +1,812 @@
+// 公安主题公共样式 - 用于系统管理页面
+$police-primary: #1E3A8A;
+$police-dark: #172554;
+$police-blue: #2563EB;
+$police-light-blue: #3B82F6;
+$police-bg: #F8FAFE;
+$police-card: #FFFFFF;
+$police-border: #E2E8F0;
+$police-text: #1E293B;
+$police-text-muted: #5B6E8C;
+
+// 页面容器
+.police-page {
+  padding: 20px;
+  background: $police-bg;
+  min-height: 100%;
+  border-radius: 0;
+}
+
+// 内容网格布局
+.content-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 20px;
+  height: calc(100vh - 180px);
+
+  &.full-width {
+    grid-template-columns: 1fr;
+  }
+}
+
+// 左侧面板
+.side-panel {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid $police-border;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// 主面板
+.main-panel {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid $police-border;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// 面板头部
+.panel-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid $police-border;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #FAFAFA 0%, #F8FAFE 100%);
+
+  h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: $police-primary;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 8px;
+  }
+}
+
+// 搜索区域
+.search-area {
+  padding: 14px 18px;
+  border-bottom: 1px solid $police-border;
+  background: #FAFAFA;
+
+  .search-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .search-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    label {
+      font-size: 12px;
+      color: $police-text-muted;
+      white-space: nowrap;
+    }
+  }
+
+  .search-input {
+    width: 180px;
+    padding: 8px 12px;
+    border: 1px solid $police-border;
+    border-radius: 10px;
+    font-size: 12px;
+    color: $police-text;
+    background: white;
+    transition: all 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: $police-blue;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+    }
+
+    &::placeholder { color: $police-text-muted; }
+  }
+
+  .search-select {
+    width: 140px;
+  }
+}
+
+// 工具栏
+.toolbar {
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid $police-border;
+
+  .toolbar-left {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .toolbar-right {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+}
+
+// 公安风格按钮
+.police-btn {
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid $police-border;
+  background: white;
+  color: $police-text;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    background: #F5F5F5;
+    border-color: $police-text-muted;
+  }
+
+  &.primary {
+    background: $police-blue;
+    color: white;
+    border-color: $police-blue;
+
+    &:hover { background: $police-light-blue; }
+  }
+
+  &.success {
+    background: #10B981;
+    color: white;
+    border-color: #10B981;
+  }
+
+  &.danger {
+    background: #EF4444;
+    color: white;
+    border-color: #EF4444;
+  }
+
+  &.warning {
+    background: #F59E0B;
+    color: white;
+    border-color: #F59E0B;
+  }
+
+  &.info {
+    background: #6B7280;
+    color: white;
+    border-color: #6B7280;
+  }
+}
+
+// 表格区域
+.table-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+// 公安风格表格
+.police-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    background: linear-gradient(135deg, #F8FAFE 0%, #F1F5F9 100%);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: $police-text-muted;
+      border-bottom: 2px solid $police-border;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+  }
+
+  tbody tr {
+    border-bottom: 1px solid $police-border;
+    transition: background 0.15s;
+
+    &:hover { background: rgba(59, 130, 246, 0.05); }
+
+    &:last-child { border-bottom: none; }
+  }
+
+  td {
+    padding: 12px 16px;
+    font-size: 13px;
+    color: $police-text;
+
+    &.text-center { text-align: center; }
+    &.text-muted { color: $police-text-muted; }
+    &.text-code {
+      font-family: ui-monospace, monospace;
+      font-size: 12px;
+    }
+  }
+}
+
+// 表格内操作按钮 - 图标样式
+.table-action {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+
+  .action-icon-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 1px solid $police-border;
+    background: white;
+    color: $police-text-muted;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    &:hover {
+      background: #EFF6FF;
+      color: $police-blue;
+      border-color: rgba(59, 130, 246, 0.3);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15);
+    }
+
+    &.edit:hover {
+      background: rgba(16, 185, 129, 0.1);
+      color: #10B981;
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    &.delete:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: #EF4444;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    &.primary:hover {
+      background: $police-blue;
+      color: white;
+      border-color: $police-blue;
+    }
+  }
+}
+
+// 状态标签
+.status-tag {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+
+  &.success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10B981;
+  }
+
+  &.danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+  }
+
+  &.warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #F59E0B;
+  }
+
+  &.info {
+    background: rgba(59, 130, 246, 0.1);
+    color: $police-blue;
+  }
+}
+
+// 分页区域
+.pagination-bar {
+  padding: 14px 18px;
+  border-top: 1px solid $police-border;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #FAFAFA;
+
+  .page-info {
+    font-size: 12px;
+    color: $police-text-muted;
+  }
+
+  .page-buttons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .page-btn {
+    padding: 6px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid $police-border;
+    background: white;
+    color: $police-text;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    &:hover:not(:disabled) {
+      background: $police-blue;
+      color: white;
+      border-color: $police-blue;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// 部门树样式
+.dept-tree-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.tree-search {
+  padding: 12px 14px;
+  position: relative;
+
+  .search-icon {
+    position: absolute;
+    left: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    color: $police-text-muted;
+  }
+
+  input {
+    width: 100%;
+    padding: 8px 10px 8px 32px;
+    border: 1px solid $police-border;
+    border-radius: 10px;
+    font-size: 12px;
+    color: $police-text;
+    background: #F5F5F5;
+    transition: all 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: $police-blue;
+      background: white;
+    }
+
+    &::placeholder { color: $police-text-muted; }
+  }
+}
+
+// 空状态
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 20px;
+  color: $police-text-muted;
+  font-size: 13px;
+
+  .empty-icon {
+    width: 48px;
+    height: 48px;
+    opacity: 0.5;
+  }
+}
+
+// 加载状态
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px 20px;
+  color: $police-text-muted;
+  font-size: 13px;
+
+  .spin-icon {
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// 图标尺寸
+.icon-small { width: 14px; height: 14px; }
+.icon-medium { width: 18px; height: 18px; }
+.icon-muted { color: $police-text-muted; }
+
+// 响应式
+@media (max-width: 1100px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+    height: auto;
+
+    .side-panel { max-height: 280px; }
+  }
+}
+
+// Element Plus 组件样式覆盖（scoped内无效，需要全局）
+.police-page {
+  // el-table 样式覆盖
+  .el-table {
+    --el-table-border-color: #{$police-border};
+    --el-table-header-bg-color: #F8FAFE;
+    --el-table-row-hover-bg-color: rgba(59, 130, 246, 0.05);
+    --el-table-text-color: #{$police-text};
+    --el-table-header-text-color: #{$police-text-muted};
+
+    border-radius: 0;
+    font-size: 13px;
+
+    th.el-table__cell {
+      font-weight: 600;
+      font-size: 12px;
+      padding: 12px 16px;
+    }
+
+    td.el-table__cell {
+      padding: 12px 16px;
+    }
+  }
+
+  // el-button 样式覆盖
+  .el-button {
+    border-radius: 10px;
+    font-size: 12px;
+    padding: 8px 16px;
+    font-weight: 500;
+  }
+
+  .el-button--primary {
+    background: #{$police-blue};
+    border-color: #{$police-blue};
+  }
+
+  .el-button--success {
+    background: #10B981;
+    border-color: #10B981;
+  }
+
+  .el-button--danger {
+    background: #EF4444;
+    border-color: #EF4444;
+  }
+
+  .el-button--warning {
+    background: #F59E0B;
+    border-color: #F59E0B;
+  }
+
+  .el-button--info {
+    background: #6B7280;
+    border-color: #6B7280;
+  }
+
+  .el-button.is-plain {
+    background: white;
+  }
+
+  // el-input 样式覆盖
+  .el-input__wrapper {
+    border-radius: 10px;
+    box-shadow: 0 0 0 1px #{$police-border} inset;
+  }
+
+  .el-input__wrapper:hover {
+    box-shadow: 0 0 0 1px #{$police-text-muted} inset;
+  }
+
+  .el-input__wrapper.is-focus {
+    box-shadow: 0 0 0 1px #{$police-blue} inset, 0 0 0 2px rgba(37, 99, 235, 0.1);
+  }
+
+  // el-select 样式覆盖
+  .el-select__wrapper {
+    border-radius: 10px;
+  }
+
+  // el-dialog 样式覆盖
+  .el-dialog {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+
+    .el-dialog__header {
+      padding: 18px 24px;
+      border-bottom: 1px solid #{$police-border};
+      background: linear-gradient(135deg, #F8FAFE 0%, #EFF6FF 100%);
+      margin: 0;
+
+      .el-dialog__title {
+        font-weight: 600;
+        font-size: 16px;
+        color: #{$police-primary};
+        letter-spacing: 0.5px;
+      }
+
+      .el-dialog__headerbtn {
+        top: 18px;
+        right: 20px;
+
+        .el-dialog__close {
+          color: #{$police-text-muted};
+          font-size: 18px;
+
+          &:hover {
+            color: #{$police-blue};
+          }
+        }
+      }
+    }
+
+    .el-dialog__body {
+      padding: 24px;
+      max-height: 60vh;
+      overflow-y: auto;
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background: #CBD5E1;
+        border-radius: 3px;
+      }
+    }
+
+    .el-dialog__footer {
+      padding: 16px 24px;
+      border-top: 1px solid #{$police-border};
+      background: #FAFAFA;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+
+      .el-button {
+        min-width: 80px;
+      }
+    }
+  }
+
+  // el-form 样式覆盖
+  .el-form-item__label {
+    color: #{$police-text-muted};
+    font-size: 12px;
+  }
+
+  // el-tree 样式覆盖
+  .el-tree {
+    background: transparent;
+    font-size: 12px;
+    color: #{$police-text};
+
+    .el-tree-node__content {
+      height: 32px;
+      border-radius: 8px;
+      margin: 2px 0;
+
+      &:hover {
+        background: rgba(59, 130, 246, 0.08);
+      }
+    }
+
+    .el-tree-node.is-current > .el-tree-node__content {
+      background: rgba(59, 130, 246, 0.12);
+      color: #{$police-blue};
+      font-weight: 500;
+    }
+  }
+
+  // el-pagination 样式覆盖
+  .el-pagination {
+    .el-pagination__btn {
+      border-radius: 10px;
+    }
+
+    .el-pager li {
+      border-radius: 8px;
+    }
+  }
+
+  // el-tag 样式覆盖
+  .el-tag {
+    border-radius: 20px;
+    font-size: 11px;
+    padding: 0 10px;
+  }
+
+  // el-switch 样式覆盖
+  .el-switch {
+    --el-switch-on-color: #{$police-blue};
+  }
+}
+
+// ===== 全局弹窗样式（用于 append-to-body 的 dialog）=====
+.el-dialog {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+
+  .el-dialog__header {
+    padding: 18px 24px;
+    border-bottom: 1px solid $police-border;
+    background: linear-gradient(135deg, #F8FAFE 0%, #EFF6FF 100%);
+    margin: 0;
+
+    .el-dialog__title {
+      font-weight: 600;
+      font-size: 16px;
+      color: $police-primary;
+      letter-spacing: 0.5px;
+    }
+
+    .el-dialog__headerbtn {
+      top: 18px;
+      right: 20px;
+
+      .el-dialog__close {
+        color: $police-text-muted;
+        font-size: 18px;
+
+        &:hover {
+          color: $police-blue;
+        }
+      }
+    }
+  }
+
+  .el-dialog__body {
+    padding: 24px;
+    max-height: 60vh;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 3px;
+    }
+  }
+
+  .el-dialog__footer {
+    padding: 16px 24px;
+    border-top: 1px solid $police-border;
+    background: #FAFAFA;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+
+    .el-button {
+      min-width: 80px;
+    }
+  }
+
+  // 弹窗内的表单元素样式
+  .el-form-item__label {
+    color: $police-text-muted;
+    font-size: 13px;
+  }
+
+  .el-input__wrapper {
+    border-radius: 10px;
+    box-shadow: 0 0 0 1px $police-border inset;
+  }
+
+  .el-input__wrapper:hover {
+    box-shadow: 0 0 0 1px $police-text-muted inset;
+  }
+
+  .el-input__wrapper.is-focus {
+    box-shadow: 0 0 0 1px $police-blue inset, 0 0 0 2px rgba(37, 99, 235, 0.1);
+  }
+
+  .el-select__wrapper {
+    border-radius: 10px;
+  }
+
+  .el-switch {
+    --el-switch-on-color: #{$police-blue};
+  }
+
+  .el-tree {
+    background: transparent;
+    font-size: 13px;
+    color: $police-text;
+
+    .el-tree-node__content {
+      height: 32px;
+      border-radius: 8px;
+      margin: 2px 0;
+
+      &:hover {
+        background: rgba(59, 130, 246, 0.08);
+      }
+    }
+
+    .el-tree-node.is-current > .el-tree-node__content {
+      background: rgba(59, 130, 246, 0.12);
+      color: $police-blue;
+      font-weight: 500;
+    }
+  }
+}
+
+// 全局按钮样式（用于弹窗内的按钮）
+.el-button {
+  border-radius: 10px;
+  font-size: 13px;
+  padding: 8px 16px;
+  font-weight: 500;
+}
+
+.el-button--primary {
+  background: $police-blue;
+  border-color: $police-blue;
+}
+
+.el-button--success {
+  background: #10B981;
+  border-color: #10B981;
+}
+
+.el-button--danger {
+  background: #EF4444;
+  border-color: #EF4444;
+}
+
+.el-button--warning {
+  background: #F59E0B;
+  border-color: #F59E0B;
+}
+
+.el-button--info {
+  background: #6B7280;
+  border-color: #6B7280;
+}

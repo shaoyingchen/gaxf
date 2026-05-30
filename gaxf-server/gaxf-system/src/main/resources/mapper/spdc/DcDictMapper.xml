@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaxf.spdc.mapper.DcDictMapper">
+
+    <resultMap type="DcDict" id="DcDictResult">
+        <id     property="id"           column="id"             />
+        <result property="parentId"     column="parent_id"      />
+        <result property="name"         column="name"           />
+        <result property="kind"         column="kind"           />
+        <result property="sort"         column="sort"           />
+        <result property="deleted"      column="deleted"        />
+        <result property="createBy"     column="creator"        />
+        <result property="createTime"   column="create_time"    />
+        <result property="updateBy"     column="updater"        />
+        <result property="updateTime"   column="update_time"    />
+        <result property="parentName"   column="parent_name"    />
+    </resultMap>
+
+    <sql id="selectDcDictVo">
+        select d.id, d.parent_id, d.name, d.kind, d.sort, d.deleted, d.creator, d.create_time, d.updater, d.update_time,
+               p.name as parent_name
+        from dc_dict d
+        left join dc_dict p on d.parent_id = p.id
+    </sql>
+
+    <select id="selectDcDictList" parameterType="DcDict" resultMap="DcDictResult">
+        <include refid="selectDcDictVo"/>
+        where d.deleted = 0
+        <if test="parentId != null">
+            and d.parent_id = #{parentId}
+        </if>
+        <if test="name != null and name != ''">
+            and d.name like concat('%', #{name}, '%')
+        </if>
+        <if test="kind != null">
+            and d.kind = #{kind}
+        </if>
+        order by d.kind, d.sort, d.id
+    </select>
+
+    <select id="selectDcDictTree" parameterType="DcDict" resultMap="DcDictResult">
+        <include refid="selectDcDictVo"/>
+        where d.deleted = 0
+        <if test="kind != null">
+            and d.kind = #{kind}
+        </if>
+        order by d.kind, d.sort, d.id
+    </select>
+
+    <select id="selectDcDictById" parameterType="Integer" resultMap="DcDictResult">
+        <include refid="selectDcDictVo"/>
+        where d.id = #{id} and d.deleted = 0
+    </select>
+
+    <select id="hasChildById" parameterType="Integer" resultType="int">
+        select count(1) from dc_dict where parent_id = #{id} and deleted = 0
+    </select>
+
+    <insert id="insertDcDict" parameterType="DcDict" useGeneratedKeys="true" keyProperty="id">
+        insert into dc_dict
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">parent_id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="kind != null">kind,</if>
+            <if test="sort != null">sort,</if>
+            <if test="createBy != null">creator,</if>
+            create_time,
+            <if test="deleted != null">deleted,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">#{parentId},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="kind != null">#{kind},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="createBy != null">#{createBy},</if>
+            sysdate(),
+            <if test="deleted != null">#{deleted},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDcDict" parameterType="DcDict">
+        update dc_dict
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="kind != null">kind = #{kind},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="updateBy != null">updater = #{updateBy},</if>
+            update_time = sysdate(),
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDcDictById" parameterType="Integer">
+        update dc_dict set deleted = 1, update_time = sysdate() where id = #{id}
+    </delete>
+
+    <delete id="deleteDcDictByIds" parameterType="Integer">
+        update dc_dict set deleted = 1, update_time = sysdate() where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

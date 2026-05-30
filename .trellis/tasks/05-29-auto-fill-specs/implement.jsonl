@@ -1,0 +1,15 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend spec index — lists all backend coding guidelines"}
+{"file": ".trellis/spec/backend/directory-structure.md", "reason": "Backend module organization, naming conventions, and directory layout"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "Error handling patterns, AjaxResult contract, ServiceException usage"}
+{"file": ".trellis/spec/backend/database-guidelines.md", "reason": "MyBatis patterns, pagination, data scope, naming conventions"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Forbidden patterns, required patterns, REST conventions, review checklist"}
+{"file": ".trellis/spec/backend/logging-guidelines.md", "reason": "SLF4J logging levels, @Log annotation, async logging patterns"}
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend spec index — lists all frontend coding guidelines"}
+{"file": ".trellis/spec/frontend/directory-structure.md", "reason": "Frontend directory layout, module organization, naming conventions"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Vue 3 SFC patterns, Element Plus usage, permission directives"}
+{"file": ".trellis/spec/frontend/hook-guidelines.md", "reason": "Data fetching patterns, auto-import, composable conventions"}
+{"file": ".trellis/spec/frontend/state-management.md", "reason": "Pinia store modules, permission flow, state categorization"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Forbidden patterns, required patterns, review checklist"}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "TypeScript type organization, API-Backend type correspondence"}
+{"file": ".trellis/spec/guides/index.md", "reason": "Thinking guide index — cross-layer and code reuse triggers"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Cross-layer contract tables: AjaxResult, permission strings, pagination, date formats"}
