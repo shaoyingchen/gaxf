@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Brush, Check } from '@element-plus/icons-vue'
-import { useTheme } from '@/views/spdc/composables/useTheme'
+import { useTheme } from '@/views/xf/composables/useTheme'
 
 const { currentTheme, setTheme, themes } = useTheme()
 

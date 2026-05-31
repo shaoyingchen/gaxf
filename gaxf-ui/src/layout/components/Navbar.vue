@@ -111,7 +111,7 @@ function logout(): void {
     type: 'warning'
   }).then(() => {
     userStore.logOut().then(() => {
-      location.href = '/index'
+      location.href = '/home'
     })
   }).catch(() => { })
 }

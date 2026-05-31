@@ -48,10 +48,10 @@
         <!-- 工具栏 -->
         <div class="toolbar">
           <div class="toolbar-left">
-            <button class="police-btn primary" @click="handleAdd" v-hasPermi="['system:role:add']">新增</button>
-            <button class="police-btn success" :disabled="single" @click="handleUpdate" v-hasPermi="['system:role:edit']">修改</button>
-            <button class="police-btn danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['system:role:remove']">删除</button>
-            <button class="police-btn warning" @click="handleExport" v-hasPermi="['system:role:export']">导出</button>
+            <button class="police-btn primary" @click="handleAdd">新增</button>
+            <button class="police-btn success" :disabled="single" @click="handleUpdate">修改</button>
+            <button class="police-btn danger" :disabled="multiple" @click="handleDelete">删除</button>
+            <button class="police-btn warning" @click="handleExport">导出</button>
           </div>
           <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
         </div>
@@ -78,22 +78,22 @@
               <template #default="scope">
                 <div class="table-action" v-if="scope.row.roleId !== 1">
                   <el-tooltip content="修改" placement="top">
-                    <button class="action-icon-btn edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:role:edit']">
+                    <button class="action-icon-btn edit" @click="handleUpdate(scope.row)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                     </button>
                   </el-tooltip>
                   <el-tooltip content="删除" placement="top">
-                    <button class="action-icon-btn danger" @click="handleDelete(scope.row)" v-hasPermi="['system:role:remove']">
+                    <button class="action-icon-btn danger" @click="handleDelete(scope.row)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                     </button>
                   </el-tooltip>
                   <el-tooltip content="数据权限" placement="top">
-                    <button class="action-icon-btn" @click="handleDataScope(scope.row)" v-hasPermi="['system:role:edit']">
+                    <button class="action-icon-btn" @click="handleDataScope(scope.row)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
                     </button>
                   </el-tooltip>
                   <el-tooltip content="分配用户" placement="top">
-                    <button class="action-icon-btn" @click="handleAuthUser(scope.row)" v-hasPermi="['system:role:edit']">
+                    <button class="action-icon-btn" @click="handleAuthUser(scope.row)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
                     </button>
                   </el-tooltip>

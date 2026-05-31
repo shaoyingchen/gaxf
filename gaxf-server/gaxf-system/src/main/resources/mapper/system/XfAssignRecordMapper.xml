@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaxf.system.mapper.XfAssignRecordMapper">
+
+    <resultMap type="XfAssignRecord" id="XfAssignRecordResult">
+        <id     property="id"              column="id"               />
+        <result property="orderId"         column="order_id"         />
+        <result property="assignDeptId"    column="assign_dept_id"   />
+        <result property="assignDeptName"  column="assign_dept_name" />
+        <result property="assignType"      column="assign_type"      />
+        <result property="assignTime"      column="assign_time"      />
+        <result property="assignBy"        column="assign_by"        />
+        <result property="status"          column="status"           />
+        <result property="receiveTime"     column="receive_time"     />
+        <result property="deadline"        column="deadline"         />
+        <result property="reportContent"   column="report_content"   />
+        <result property="reportAttachment" column="report_attachment" />
+        <result property="reportTime"      column="report_time"      />
+        <result property="createBy"        column="create_by"        />
+        <result property="createTime"      column="create_time"      />
+        <result property="updateBy"        column="update_by"        />
+        <result property="updateTime"      column="update_time"      />
+        <result property="remark"          column="remark"           />
+    </resultMap>
+
+    <sql id="selectXfAssignRecordVo">
+        select id, order_id, assign_dept_id, assign_dept_name, assign_type, assign_time,
+               assign_by, status, receive_time, deadline, report_content, report_attachment,
+               report_time, create_by, create_time, update_by, update_time, remark
+        from xf_assign_record
+    </sql>
+
+    <select id="selectXfAssignRecordById" parameterType="Long" resultMap="XfAssignRecordResult">
+        <include refid="selectXfAssignRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectXfAssignRecordList" parameterType="XfAssignRecord" resultMap="XfAssignRecordResult">
+        <include refid="selectXfAssignRecordVo"/>
+        <where>
+            <if test="orderId != null">
+                AND order_id = #{orderId}
+            </if>
+            <if test="assignDeptId != null">
+                AND assign_dept_id = #{assignDeptId}
+            </if>
+            <if test="assignDeptName != null and assignDeptName != ''">
+                AND assign_dept_name like concat('%', #{assignDeptName}, '%')
+            </if>
+            <if test="assignType != null and assignType != ''">
+                AND assign_type = #{assignType}
+            </if>
+            <if test="assignBy != null and assignBy != ''">
+                AND assign_by like concat('%', #{assignBy}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectXfAssignRecordByOrderId" parameterType="Long" resultMap="XfAssignRecordResult">
+        <include refid="selectXfAssignRecordVo"/>
+        where order_id = #{orderId}
+        order by assign_time desc
+    </select>
+
+    <insert id="insertXfAssignRecord" parameterType="XfAssignRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_assign_record(
+            <if test="orderId != null">order_id,</if>
+            <if test="assignDeptId != null">assign_dept_id,</if>
+            <if test="assignDeptName != null and assignDeptName != ''">assign_dept_name,</if>
+            <if test="assignType != null and assignType != ''">assign_type,</if>
+            <if test="assignTime != null">assign_time,</if>
+            <if test="assignBy != null and assignBy != ''">assign_by,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="receiveTime != null">receive_time,</if>
+            <if test="deadline != null">deadline,</if>
+            <if test="reportContent != null and reportContent != ''">report_content,</if>
+            <if test="reportAttachment != null and reportAttachment != ''">report_attachment,</if>
+            <if test="reportTime != null">report_time,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            create_time
+        )values(
+            <if test="orderId != null">#{orderId},</if>
+            <if test="assignDeptId != null">#{assignDeptId},</if>
+            <if test="assignDeptName != null and assignDeptName != ''">#{assignDeptName},</if>
+            <if test="assignType != null and assignType != ''">#{assignType},</if>
+            <if test="assignTime != null">#{assignTime},</if>
+            <if test="assignBy != null and assignBy != ''">#{assignBy},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="receiveTime != null">#{receiveTime},</if>
+            <if test="deadline != null">#{deadline},</if>
+            <if test="reportContent != null and reportContent != ''">#{reportContent},</if>
+            <if test="reportAttachment != null and reportAttachment != ''">#{reportAttachment},</if>
+            <if test="reportTime != null">#{reportTime},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            sysdate()
+        )
+    </insert>
+
+    <update id="updateXfAssignRecord" parameterType="XfAssignRecord">
+        update xf_assign_record
+        <set>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="assignDeptId != null">assign_dept_id = #{assignDeptId},</if>
+            <if test="assignDeptName != null">assign_dept_name = #{assignDeptName},</if>
+            <if test="assignType != null and assignType != ''">assign_type = #{assignType},</if>
+            <if test="assignTime != null">assign_time = #{assignTime},</if>
+            <if test="assignBy != null">assign_by = #{assignBy},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="receiveTime != null">receive_time = #{receiveTime},</if>
+            <if test="deadline != null">deadline = #{deadline},</if>
+            <if test="reportContent != null">report_content = #{reportContent},</if>
+            <if test="reportAttachment != null">report_attachment = #{reportAttachment},</if>
+            <if test="reportTime != null">report_time = #{reportTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfAssignRecordById" parameterType="Long">
+        delete from xf_assign_record where id = #{id}
+    </delete>
+
+    <delete id="deleteXfAssignRecordByIds" parameterType="Long">
+        delete from xf_assign_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

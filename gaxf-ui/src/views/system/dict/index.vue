@@ -90,26 +90,26 @@
             <!-- 工具栏 -->
             <div class="toolbar">
                <div class="toolbar-left">
-                  <el-button type="primary" @click="handleAdd" v-hasPermi="['system:dict:add']">
+                  <el-button type="primary" @click="handleAdd">
                      <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 5v14M5 12h14"></path>
                      </svg>
                      新增
                   </el-button>
-                  <el-button type="success" :disabled="single" @click="handleUpdate" v-hasPermi="['system:dict:edit']">
+                  <el-button type="success" :disabled="single" @click="handleUpdate">
                      <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                      </svg>
                      修改
                   </el-button>
-                  <el-button type="danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['system:dict:remove']">
+                  <el-button type="danger" :disabled="multiple" @click="handleDelete">
                      <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                      </svg>
                      删除
                   </el-button>
-                  <el-button type="warning" @click="handleExport" v-hasPermi="['system:dict:export']">
+                  <el-button type="warning" @click="handleExport">
                      <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <polyline points="7 10 12 15 17 10"></polyline>
@@ -117,7 +117,7 @@
                      </svg>
                      导出
                   </el-button>
-                  <el-button type="danger" @click="handleRefreshCache" v-hasPermi="['system:dict:remove']">
+                  <el-button type="danger" @click="handleRefreshCache">
                      <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
                         <path d="M21 3v5h-5"></path>
@@ -158,7 +158,7 @@
                      <template #default="scope">
                         <div class="table-action">
                            <el-tooltip content="修改" placement="top">
-                              <button class="action-icon-btn" @click="handleUpdate(scope.row)" v-hasPermi="['system:dict:edit']">
+                              <button class="action-icon-btn" @click="handleUpdate(scope.row)">
                                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
@@ -166,14 +166,14 @@
                               </button>
                            </el-tooltip>
                            <el-tooltip content="列表" placement="top">
-                              <button class="action-icon-btn" @click="handleDataList(scope.row)" v-hasPermi="['system:dict:edit']">
+                              <button class="action-icon-btn" @click="handleDataList(scope.row)">
                                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
                                  </svg>
                               </button>
                            </el-tooltip>
                            <el-tooltip content="删除" placement="top">
-                              <button class="action-icon-btn" @click="handleDelete(scope.row)" v-hasPermi="['system:dict:remove']">
+                              <button class="action-icon-btn" @click="handleDelete(scope.row)">
                                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="3 6 5 6 21 6"></polyline>
                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>

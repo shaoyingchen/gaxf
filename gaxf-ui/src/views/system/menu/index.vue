@@ -51,13 +51,13 @@
                      type="primary"
                      icon="Plus"
                      @click="handleAdd"
-                     v-hasPermi="['system:menu:add']"
+                    
                   >新增</el-button>
                   <el-button
                      type="warning"
                      icon="Check"
                      @click="handleSaveSort"
-                     v-hasPermi="['system:menu:edit']"
+                    
                   >保存排序</el-button>
                   <el-button
                      type="info"
@@ -110,7 +110,7 @@
                      <template #default="scope">
                         <div class="table-action">
                            <el-tooltip content="修改" placement="top">
-                              <button class="action-icon-btn edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:menu:edit']">
+                              <button class="action-icon-btn edit" @click="handleUpdate(scope.row)">
                                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
@@ -118,7 +118,7 @@
                               </button>
                            </el-tooltip>
                            <el-tooltip content="新增" placement="top">
-                              <button class="action-icon-btn" @click="handleAdd(scope.row)" v-hasPermi="['system:menu:add']">
+                              <button class="action-icon-btn" @click="handleAdd(scope.row)">
                                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <line x1="12" y1="5" x2="12" y2="19"/>
                                     <line x1="5" y1="12" x2="19" y2="12"/>
@@ -126,7 +126,7 @@
                               </button>
                            </el-tooltip>
                            <el-tooltip content="删除" placement="top">
-                              <button class="action-icon-btn delete" @click="handleDelete(scope.row)" v-hasPermi="['system:menu:remove']">
+                              <button class="action-icon-btn delete" @click="handleDelete(scope.row)">
                                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="3 6 5 6 21 6"/>
                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>

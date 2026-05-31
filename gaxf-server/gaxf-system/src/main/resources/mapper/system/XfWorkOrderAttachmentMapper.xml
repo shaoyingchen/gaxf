@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaxf.system.mapper.XfWorkOrderAttachmentMapper">
+
+    <resultMap type="XfWorkOrderAttachment" id="XfWorkOrderAttachmentResult">
+        <id     property="id"              column="id"               />
+        <result property="orderId"         column="order_id"         />
+        <result property="fileName"        column="file_name"        />
+        <result property="filePath"        column="file_path"        />
+        <result property="fileType"        column="file_type"        />
+        <result property="fileSize"        column="file_size"        />
+        <result property="uploadBy"        column="upload_by"        />
+        <result property="uploadTime"      column="upload_time"      />
+        <result property="delFlag"         column="del_flag"         />
+    </resultMap>
+
+    <sql id="selectXfWorkOrderAttachmentVo">
+        select id, order_id, file_name, file_path, file_type, file_size, upload_by, upload_time, del_flag
+        from xf_work_order_attachment
+    </sql>
+
+    <select id="selectXfWorkOrderAttachmentById" parameterType="Long" resultMap="XfWorkOrderAttachmentResult">
+        <include refid="selectXfWorkOrderAttachmentVo"/>
+        where id = #{id} and del_flag = '0'
+    </select>
+
+    <select id="selectXfWorkOrderAttachmentByOrderId" parameterType="Long" resultMap="XfWorkOrderAttachmentResult">
+        <include refid="selectXfWorkOrderAttachmentVo"/>
+        where order_id = #{orderId} and del_flag = '0'
+        order by upload_time desc
+    </select>
+
+    <insert id="insertXfWorkOrderAttachment" parameterType="XfWorkOrderAttachment" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_work_order_attachment(
+            <if test="orderId != null">order_id,</if>
+            <if test="fileName != null and fileName != ''">file_name,</if>
+            <if test="filePath != null and filePath != ''">file_path,</if>
+            <if test="fileType != null and fileType != ''">file_type,</if>
+            <if test="fileSize != null">file_size,</if>
+            <if test="uploadBy != null and uploadBy != ''">upload_by,</if>
+            <if test="uploadTime != null">upload_time,</if>
+            del_flag
+        )values(
+            <if test="orderId != null">#{orderId},</if>
+            <if test="fileName != null and fileName != ''">#{fileName},</if>
+            <if test="filePath != null and filePath != ''">#{filePath},</if>
+            <if test="fileType != null and fileType != ''">#{fileType},</if>
+            <if test="fileSize != null">#{fileSize},</if>
+            <if test="uploadBy != null and uploadBy != ''">#{uploadBy},</if>
+            <if test="uploadTime != null">#{uploadTime},</if>
+            '0'
+        )
+    </insert>
+
+    <insert id="batchInsertXfWorkOrderAttachment" parameterType="java.util.List">
+        insert into xf_work_order_attachment(order_id, file_name, file_path, file_type, file_size, upload_by, upload_time, del_flag)
+        values
+        <foreach item="item" collection="list" separator=",">
+            (#{item.orderId}, #{item.fileName}, #{item.filePath}, #{item.fileType}, #{item.fileSize},
+             #{item.uploadBy}, #{item.uploadTime}, '0')
+        </foreach>
+    </insert>
+
+    <update id="deleteXfWorkOrderAttachmentById" parameterType="Long">
+        update xf_work_order_attachment set del_flag = '2' where id = #{id}
+    </update>
+
+    <update id="deleteXfWorkOrderAttachmentByIds" parameterType="Long">
+        update xf_work_order_attachment set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="deleteXfWorkOrderAttachmentByOrderId" parameterType="Long">
+        update xf_work_order_attachment set del_flag = '2' where order_id = #{orderId}
+    </update>
+
+</mapper>

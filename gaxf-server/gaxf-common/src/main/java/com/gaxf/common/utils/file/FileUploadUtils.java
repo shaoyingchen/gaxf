@@ -172,7 +172,7 @@ public class FileUploadUtils
     {
         int dirLastIndex = RuoYiConfig.getProfile().length() + 1;
         String currentDir = StringUtils.substring(uploadDir, dirLastIndex);
-        return Constants.RESOURCE_PREFIX + "/" + currentDir + "/" + fileName;
+        return Constants.RESOURCE_PREFIX + (StringUtils.isNotEmpty(currentDir) ? "/" + currentDir : "") + "/" + fileName;
     }
 
     /**

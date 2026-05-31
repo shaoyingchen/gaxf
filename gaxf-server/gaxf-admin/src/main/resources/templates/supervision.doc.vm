@@ -1,0 +1,29 @@
+#**
+ * 信访督办建议模板
+ *#
+信访督办建议
+
+编    号：${orderNo}
+
+${title}
+
+信访人基本情况：
+  姓名：${petitionerName}
+  身份证号：${petitionerIdcard}
+  联系电话：${petitionerPhone}
+  地址：${petitionerAddress}
+
+信访来源：${petitionSource}
+
+信访事由：
+${petitionReason}
+
+工单内容/任务要求：
+${content}
+
+登记时间：${registerTime}
+限期报送截止时间：${deadline}
+
+该信访事项已超过办理期限，请尽快办理并报送结果。
+
+                                              ${currentDate}

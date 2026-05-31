@@ -29,7 +29,7 @@ import elementIcons from '@/components/SvgIcon/svgicon'
 import './permission' // permission control
 
 // 初始化主题
-import { useTheme } from '@/views/spdc/composables/useTheme'
+import { useTheme } from '@/views/xf/composables/useTheme'
 useTheme().initTheme()
 
 import { useDict } from '@/utils/dict'

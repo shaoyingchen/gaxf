@@ -60,31 +60,24 @@ export const constantRoutes = [
   {
     path: '',
     component: Layout,
-    redirect: '/home',           // 修改默认重定向为 /home
-    children: [
-      {
-        path: '/index',
-        component: () => import('@/views/index.vue'),
-        name: 'Index',
-        meta: { title: '首页', icon: 'dashboard', affix: true }
-      }
-    ]
+    redirect: '/home',
+    children: []
   },
   // 新增独立首页路由（不使用 Layout，完全独立）
   {
     path: '/home',
     name: 'Home',
-    component: () => import('@/views/spdc/home.vue'),
+    component: () => import('@/views/xf/home.vue'),
     hidden: true,                // 不在侧边栏显示
-    meta: { title: '智慧办公首页' }
+    meta: { title: '智慧信访首页' }
   },
-  // 公安监控驾驶舱（独立布局，包含侧边栏）
+  // 信访工单详情（独立路由）
   {
-    path: '/police-dashboard',
-    name: 'PoliceDashboard',
-    component: () => import('@/views/spdc/dashboard/PoliceDashboard.vue'),
+    path: '/xf/workOrder/detail/:id',
+    name: 'XfWorkOrderDetail',
+    component: () => import('@/views/xf/workOrder/detail.vue'),
     hidden: true,
-    meta: { title: '公安智能视频监控驾驶舱' }
+    meta: { title: '工单详情' }
   },
   {
     path: '/lock',

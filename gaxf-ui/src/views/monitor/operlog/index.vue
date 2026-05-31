@@ -83,7 +83,7 @@
                icon="Delete"
                :disabled="multiple"
                @click="handleDelete"
-               v-hasPermi="['monitor:operlog:remove']"
+              
             >删除</el-button>
          </el-col>
          <el-col :span="1.5">
@@ -92,7 +92,7 @@
                plain
                icon="Delete"
                @click="handleClean"
-               v-hasPermi="['monitor:operlog:remove']"
+              
             >清空</el-button>
          </el-col>
          <el-col :span="1.5">
@@ -101,7 +101,7 @@
                plain
                icon="Download"
                @click="handleExport"
-               v-hasPermi="['monitor:operlog:export']"
+              
             >导出</el-button>
          </el-col>
          <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
@@ -135,7 +135,7 @@
          </el-table-column>
          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template #default="scope">
-               <el-button link type="primary" icon="View" @click="handleDetail(scope.row, scope.index)" v-hasPermi="['monitor:operlog:query']">详细</el-button>
+               <el-button link type="primary" icon="View" @click="handleDetail(scope.row, scope.index)">详细</el-button>
             </template>
          </el-table-column>
       </el-table>

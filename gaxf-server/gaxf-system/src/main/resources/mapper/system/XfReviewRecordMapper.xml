@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaxf.system.mapper.XfReviewRecordMapper">
+
+    <resultMap type="XfReviewRecord" id="XfReviewRecordResult">
+        <id     property="id"              column="id"               />
+        <result property="orderId"         column="order_id"         />
+        <result property="reviewType"      column="review_type"      />
+        <result property="reviewerId"      column="reviewer_id"      />
+        <result property="reviewerName"    column="reviewer_name"    />
+        <result property="reviewOpinion"   column="review_opinion"   />
+        <result property="reviewResult"    column="review_result"    />
+        <result property="returnTo"        column="return_to"        />
+        <result property="reviewTime"      column="review_time"      />
+        <result property="deptId"          column="dept_id"          />
+        <result property="createBy"        column="create_by"        />
+        <result property="createTime"      column="create_time"      />
+    </resultMap>
+
+    <sql id="selectXfReviewRecordVo">
+        select id, order_id, review_type, reviewer_id, reviewer_name, review_opinion,
+               review_result, return_to, review_time, dept_id, create_by, create_time
+        from xf_review_record
+    </sql>
+
+    <select id="selectXfReviewRecordById" parameterType="Long" resultMap="XfReviewRecordResult">
+        <include refid="selectXfReviewRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectXfReviewRecordList" parameterType="XfReviewRecord" resultMap="XfReviewRecordResult">
+        <include refid="selectXfReviewRecordVo"/>
+        <where>
+            <if test="orderId != null">
+                AND order_id = #{orderId}
+            </if>
+            <if test="reviewType != null and reviewType != ''">
+                AND review_type = #{reviewType}
+            </if>
+            <if test="reviewerId != null">
+                AND reviewer_id = #{reviewerId}
+            </if>
+            <if test="reviewResult != null and reviewResult != ''">
+                AND review_result = #{reviewResult}
+            </if>
+            <if test="deptId != null">
+                AND dept_id = #{deptId}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectXfReviewRecordByOrderId" parameterType="Long" resultMap="XfReviewRecordResult">
+        <include refid="selectXfReviewRecordVo"/>
+        where order_id = #{orderId}
+        order by review_time desc
+    </select>
+
+    <insert id="insertXfReviewRecord" parameterType="XfReviewRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_review_record(
+            <if test="orderId != null">order_id,</if>
+            <if test="reviewType != null and reviewType != ''">review_type,</if>
+            <if test="reviewerId != null">reviewer_id,</if>
+            <if test="reviewerName != null and reviewerName != ''">reviewer_name,</if>
+            <if test="reviewOpinion != null and reviewOpinion != ''">review_opinion,</if>
+            <if test="reviewResult != null and reviewResult != ''">review_result,</if>
+            <if test="returnTo != null and returnTo != ''">return_to,</if>
+            <if test="reviewTime != null">review_time,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            create_time
+        )values(
+            <if test="orderId != null">#{orderId},</if>
+            <if test="reviewType != null and reviewType != ''">#{reviewType},</if>
+            <if test="reviewerId != null">#{reviewerId},</if>
+            <if test="reviewerName != null and reviewerName != ''">#{reviewerName},</if>
+            <if test="reviewOpinion != null and reviewOpinion != ''">#{reviewOpinion},</if>
+            <if test="reviewResult != null and reviewResult != ''">#{reviewResult},</if>
+            <if test="returnTo != null and returnTo != ''">#{returnTo},</if>
+            <if test="reviewTime != null">#{reviewTime},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            sysdate()
+        )
+    </insert>
+
+    <update id="updateXfReviewRecord" parameterType="XfReviewRecord">
+        update xf_review_record
+        <set>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="reviewType != null and reviewType != ''">review_type = #{reviewType},</if>
+            <if test="reviewerId != null">reviewer_id = #{reviewerId},</if>
+            <if test="reviewerName != null">reviewer_name = #{reviewerName},</if>
+            <if test="reviewOpinion != null">review_opinion = #{reviewOpinion},</if>
+            <if test="reviewResult != null and reviewResult != ''">review_result = #{reviewResult},</if>
+            <if test="returnTo != null">return_to = #{returnTo},</if>
+            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfReviewRecordById" parameterType="Long">
+        delete from xf_review_record where id = #{id}
+    </delete>
+
+    <delete id="deleteXfReviewRecordByIds" parameterType="Long">
+        delete from xf_review_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

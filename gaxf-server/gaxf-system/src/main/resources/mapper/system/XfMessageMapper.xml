@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaxf.system.mapper.XfMessageMapper">
+
+    <resultMap type="XfMessage" id="XfMessageResult">
+        <id     property="id"              column="id"               />
+        <result property="orderId"         column="order_id"         />
+        <result property="receiverId"      column="receiver_id"      />
+        <result property="title"           column="title"            />
+        <result property="content"         column="content"          />
+        <result property="msgType"         column="msg_type"         />
+        <result property="isRead"          column="is_read"          />
+        <result property="readTime"        column="read_time"        />
+        <result property="createBy"        column="create_by"        />
+        <result property="createTime"      column="create_time"      />
+    </resultMap>
+
+    <sql id="selectXfMessageVo">
+        select id, order_id, receiver_id, title, cast(content as char) as content,
+               msg_type, is_read, read_time, create_by, create_time
+        from xf_message
+    </sql>
+
+    <select id="selectXfMessageById" parameterType="Long" resultMap="XfMessageResult">
+        <include refid="selectXfMessageVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectXfMessageList" parameterType="XfMessage" resultMap="XfMessageResult">
+        <include refid="selectXfMessageVo"/>
+        <where>
+            <if test="receiverId != null">
+                AND receiver_id = #{receiverId}
+            </if>
+            <if test="orderId != null">
+                AND order_id = #{orderId}
+            </if>
+            <if test="title != null and title != ''">
+                AND title like concat('%', #{title}, '%')
+            </if>
+            <if test="msgType != null and msgType != ''">
+                AND msg_type = #{msgType}
+            </if>
+            <if test="isRead != null and isRead != ''">
+                AND is_read = #{isRead}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectUnreadCount" parameterType="Long" resultType="int">
+        select count(*) from xf_message where receiver_id = #{receiverId} and is_read = '0'
+    </select>
+
+    <insert id="insertXfMessage" parameterType="XfMessage" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_message(
+            <if test="orderId != null">order_id,</if>
+            <if test="receiverId != null">receiver_id,</if>
+            <if test="title != null and title != ''">title,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="msgType != null and msgType != ''">msg_type,</if>
+            <if test="isRead != null and isRead != ''">is_read,</if>
+            <if test="readTime != null">read_time,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            create_time
+        )values(
+            <if test="orderId != null">#{orderId},</if>
+            <if test="receiverId != null">#{receiverId},</if>
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="msgType != null and msgType != ''">#{msgType},</if>
+            <if test="isRead != null and isRead != ''">#{isRead},</if>
+            <if test="readTime != null">#{readTime},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            sysdate()
+        )
+    </insert>
+
+    <insert id="batchInsertXfMessage" parameterType="java.util.List">
+        insert into xf_message(order_id, receiver_id, title, content, msg_type, is_read, create_by, create_time)
+        values
+        <foreach item="item" collection="list" separator=",">
+            (#{item.orderId}, #{item.receiverId}, #{item.title}, #{item.content},
+             #{item.msgType}, '0', #{item.createBy}, sysdate())
+        </foreach>
+    </insert>
+
+    <update id="updateXfMessage" parameterType="XfMessage">
+        update xf_message
+        <set>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="receiverId != null">receiver_id = #{receiverId},</if>
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="msgType != null and msgType != ''">msg_type = #{msgType},</if>
+            <if test="isRead != null and isRead != ''">is_read = #{isRead},</if>
+            <if test="readTime != null">read_time = #{readTime},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfMessageById" parameterType="Long">
+        delete from xf_message where id = #{id}
+    </delete>
+
+    <delete id="deleteXfMessageByIds" parameterType="Long">
+        delete from xf_message where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="readAllByReceiverId" parameterType="Long">
+        update xf_message set is_read = '1', read_time = sysdate() where receiver_id = #{receiverId} and is_read = '0'
+    </update>
+
+</mapper>

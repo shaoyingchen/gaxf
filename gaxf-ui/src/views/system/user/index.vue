@@ -95,16 +95,16 @@
         <!-- 工具栏 -->
         <div class="toolbar">
           <div class="toolbar-left">
-            <button class="police-btn primary" @click="handleAdd" v-hasPermi="['system:user:add']">
+            <button class="police-btn primary" @click="handleAdd">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
               </svg>
               新增
             </button>
-            <button class="police-btn success" :disabled="single" @click="handleUpdate" v-hasPermi="['system:user:edit']">修改</button>
-            <button class="police-btn danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['system:user:remove']">删除</button>
-            <button class="police-btn info" @click="handleImport" v-hasPermi="['system:user:import']">导入</button>
-            <button class="police-btn warning" @click="handleExport" v-hasPermi="['system:user:export']">导出</button>
+            <button class="police-btn success" :disabled="single" @click="handleUpdate">修改</button>
+            <button class="police-btn danger" :disabled="multiple" @click="handleDelete">删除</button>
+            <button class="police-btn info" @click="handleImport">导入</button>
+            <button class="police-btn warning" @click="handleExport">导出</button>
           </div>
           <right-toolbar v-model:showSearch="showSearch" @queryTable="getList" :columns="columns"></right-toolbar>
         </div>
@@ -132,22 +132,22 @@
               <template #default="scope">
                 <div class="table-action" v-if="scope.row.userId !== 1">
                   <el-tooltip content="修改" placement="top">
-                    <button class="action-icon-btn edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:user:edit']">
+                    <button class="action-icon-btn edit" @click="handleUpdate(scope.row)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                     </button>
                   </el-tooltip>
                   <el-tooltip content="删除" placement="top">
-                    <button class="action-icon-btn delete" @click="handleDelete(scope.row)" v-hasPermi="['system:user:remove']">
+                    <button class="action-icon-btn delete" @click="handleDelete(scope.row)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                     </button>
                   </el-tooltip>
                   <el-tooltip content="重置密码" placement="top">
-                    <button class="action-icon-btn" @click="handleResetPwd(scope.row)" v-hasPermi="['system:user:resetPwd']">
+                    <button class="action-icon-btn" @click="handleResetPwd(scope.row)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L7.5 14.5"/></svg>
                     </button>
                   </el-tooltip>
                   <el-tooltip content="分配角色" placement="top">
-                    <button class="action-icon-btn primary" @click="handleAuthRole(scope.row)" v-hasPermi="['system:user:edit']">
+                    <button class="action-icon-btn primary" @click="handleAuthRole(scope.row)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
                     </button>
                   </el-tooltip>
@@ -282,7 +282,7 @@ import { getToken } from "@/utils/auth"
 import { changeUserStatus, listUser, resetUserPwd, delUser, getUser, updateUser, addUser, deptTreeSelect } from "@/api/system/user"
 import { deptTree } from "@/api/system/dept"
 import '@/assets/styles/police-system.scss'
-import DeptTreeItem from '@/views/spdc/points/DeptTreeItem.vue'
+import DeptTreeItem from '@/components/DeptTree/DeptTreeItem.vue'
 import type { SysUser, UserQueryParams, UserFormDataResult } from '@/types/api/system/user'
 import type { SysRole } from '@/types/api/system/role'
 import type { SysPost } from '@/types/api/system/post'

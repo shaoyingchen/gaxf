@@ -144,7 +144,7 @@ function isAffix(tag: any): boolean {
 function isFirstView(): boolean {
   try {
     const tag = selectedTag.value && selectedTag.value.fullPath ? selectedTag.value : selectedDropdownTag.value
-    return tag.fullPath === '/index' || tag.fullPath === visitedViews.value[1].fullPath
+    return tag.fullPath === '/home' || tag.fullPath === visitedViews.value[1].fullPath
   } catch (err) {
     return false
   }

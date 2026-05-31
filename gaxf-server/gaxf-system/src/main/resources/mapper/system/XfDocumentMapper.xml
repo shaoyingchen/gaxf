@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaxf.system.mapper.XfDocumentMapper">
+
+    <resultMap type="XfDocument" id="XfDocumentResult">
+        <id     property="id"              column="id"               />
+        <result property="orderId"         column="order_id"         />
+        <result property="docType"         column="doc_type"         />
+        <result property="docNo"           column="doc_no"           />
+        <result property="docContent"      column="doc_content"      />
+        <result property="signBy"          column="sign_by"          />
+        <result property="signTime"        column="sign_time"        />
+        <result property="isSigned"        column="is_signed"        />
+        <result property="filePath"        column="file_path"        />
+        <result property="createBy"        column="create_by"        />
+        <result property="createTime"      column="create_time"      />
+        <result property="updateBy"        column="update_by"        />
+        <result property="updateTime"      column="update_time"      />
+        <result property="remark"          column="remark"           />
+    </resultMap>
+
+    <sql id="selectXfDocumentVo">
+        select id, order_id, doc_type, doc_no, cast(doc_content as char) as doc_content,
+               sign_by, sign_time, is_signed, file_path, create_by, create_time, update_by, update_time, remark
+        from xf_document
+    </sql>
+
+    <select id="selectXfDocumentById" parameterType="Long" resultMap="XfDocumentResult">
+        <include refid="selectXfDocumentVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectXfDocumentList" parameterType="XfDocument" resultMap="XfDocumentResult">
+        <include refid="selectXfDocumentVo"/>
+        <where>
+            <if test="orderId != null">
+                AND order_id = #{orderId}
+            </if>
+            <if test="docType != null and docType != ''">
+                AND doc_type = #{docType}
+            </if>
+            <if test="docNo != null and docNo != ''">
+                AND doc_no like concat('%', #{docNo}, '%')
+            </if>
+            <if test="isSigned != null and isSigned != ''">
+                AND is_signed = #{isSigned}
+            </if>
+            <if test="signBy != null and signBy != ''">
+                AND sign_by like concat('%', #{signBy}, '%')
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectXfDocumentByOrderId" parameterType="Long" resultMap="XfDocumentResult">
+        <include refid="selectXfDocumentVo"/>
+        where order_id = #{orderId}
+        order by create_time desc
+    </select>
+
+    <insert id="insertXfDocument" parameterType="XfDocument" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_document(
+            <if test="orderId != null">order_id,</if>
+            <if test="docType != null and docType != ''">doc_type,</if>
+            <if test="docNo != null and docNo != ''">doc_no,</if>
+            <if test="docContent != null and docContent != ''">doc_content,</if>
+            <if test="signBy != null and signBy != ''">sign_by,</if>
+            <if test="signTime != null">sign_time,</if>
+            <if test="isSigned != null and isSigned != ''">is_signed,</if>
+            <if test="filePath != null and filePath != ''">file_path,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            create_time
+        )values(
+            <if test="orderId != null">#{orderId},</if>
+            <if test="docType != null and docType != ''">#{docType},</if>
+            <if test="docNo != null and docNo != ''">#{docNo},</if>
+            <if test="docContent != null and docContent != ''">#{docContent},</if>
+            <if test="signBy != null and signBy != ''">#{signBy},</if>
+            <if test="signTime != null">#{signTime},</if>
+            <if test="isSigned != null and isSigned != ''">#{isSigned},</if>
+            <if test="filePath != null and filePath != ''">#{filePath},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            sysdate()
+        )
+    </insert>
+
+    <update id="updateXfDocument" parameterType="XfDocument">
+        update xf_document
+        <set>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="docType != null and docType != ''">doc_type = #{docType},</if>
+            <if test="docNo != null and docNo != ''">doc_no = #{docNo},</if>
+            <if test="docContent != null">doc_content = #{docContent},</if>
+            <if test="signBy != null">sign_by = #{signBy},</if>
+            <if test="signTime != null">sign_time = #{signTime},</if>
+            <if test="isSigned != null and isSigned != ''">is_signed = #{isSigned},</if>
+            <if test="filePath != null">file_path = #{filePath},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfDocumentById" parameterType="Long">
+        delete from xf_document where id = #{id}
+    </delete>
+
+    <delete id="deleteXfDocumentByIds" parameterType="Long">
+        delete from xf_document where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaxf.system.mapper.XfHandlingReportMapper">
+
+    <resultMap type="XfHandlingReport" id="XfHandlingReportResult">
+        <id     property="id"              column="id"               />
+        <result property="orderId"         column="order_id"         />
+        <result property="assignId"        column="assign_id"        />
+        <result property="reportDeptId"    column="report_dept_id"   />
+        <result property="reportDeptName"  column="report_dept_name" />
+        <result property="reportContent"   column="report_content"   />
+        <result property="handlingOpinion"  column="handling_opinion"  />
+        <result property="reportBy"        column="report_by"        />
+        <result property="reportTime"      column="report_time"      />
+        <result property="status"          column="status"           />
+        <result property="reviewOpinion"   column="review_opinion"   />
+        <result property="reviewBy"        column="review_by"        />
+        <result property="reviewTime"      column="review_time"      />
+        <result property="createBy"        column="create_by"        />
+        <result property="createTime"      column="create_time"      />
+        <result property="updateBy"        column="update_by"        />
+        <result property="updateTime"      column="update_time"      />
+        <result property="remark"          column="remark"           />
+    </resultMap>
+
+    <sql id="selectXfHandlingReportVo">
+        select id, order_id, assign_id, report_dept_id, report_dept_name, report_content,
+               handling_opinion, report_by, report_time, status, review_opinion, review_by,
+               review_time, create_by, create_time, update_by, update_time, remark
+        from xf_handling_report
+    </sql>
+
+    <select id="selectXfHandlingReportById" parameterType="Long" resultMap="XfHandlingReportResult">
+        <include refid="selectXfHandlingReportVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectXfHandlingReportList" parameterType="XfHandlingReport" resultMap="XfHandlingReportResult">
+        <include refid="selectXfHandlingReportVo"/>
+        <where>
+            <if test="orderId != null">
+                AND order_id = #{orderId}
+            </if>
+            <if test="assignId != null">
+                AND assign_id = #{assignId}
+            </if>
+            <if test="reportDeptId != null">
+                AND report_dept_id = #{reportDeptId}
+            </if>
+            <if test="reportDeptName != null and reportDeptName != ''">
+                AND report_dept_name like concat('%', #{reportDeptName}, '%')
+            </if>
+            <if test="reportBy != null and reportBy != ''">
+                AND report_by like concat('%', #{reportBy}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectXfHandlingReportByOrderId" parameterType="Long" resultMap="XfHandlingReportResult">
+        <include refid="selectXfHandlingReportVo"/>
+        where order_id = #{orderId}
+        order by report_time desc
+    </select>
+
+    <select id="selectXfHandlingReportByAssignId" parameterType="Long" resultMap="XfHandlingReportResult">
+        <include refid="selectXfHandlingReportVo"/>
+        where assign_id = #{assignId}
+        order by report_time desc limit 1
+    </select>
+
+    <insert id="insertXfHandlingReport" parameterType="XfHandlingReport" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_handling_report(
+            <if test="orderId != null">order_id,</if>
+            <if test="assignId != null">assign_id,</if>
+            <if test="reportDeptId != null">report_dept_id,</if>
+            <if test="reportDeptName != null and reportDeptName != ''">report_dept_name,</if>
+            <if test="reportContent != null and reportContent != ''">report_content,</if>
+            <if test="handlingOpinion != null and handlingOpinion != ''">handling_opinion,</if>
+            <if test="reportBy != null and reportBy != ''">report_by,</if>
+            <if test="reportTime != null">report_time,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="reviewOpinion != null and reviewOpinion != ''">review_opinion,</if>
+            <if test="reviewBy != null and reviewBy != ''">review_by,</if>
+            <if test="reviewTime != null">review_time,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            create_time
+        )values(
+            <if test="orderId != null">#{orderId},</if>
+            <if test="assignId != null">#{assignId},</if>
+            <if test="reportDeptId != null">#{reportDeptId},</if>
+            <if test="reportDeptName != null and reportDeptName != ''">#{reportDeptName},</if>
+            <if test="reportContent != null and reportContent != ''">#{reportContent},</if>
+            <if test="handlingOpinion != null and handlingOpinion != ''">#{handlingOpinion},</if>
+            <if test="reportBy != null and reportBy != ''">#{reportBy},</if>
+            <if test="reportTime != null">#{reportTime},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="reviewOpinion != null and reviewOpinion != ''">#{reviewOpinion},</if>
+            <if test="reviewBy != null and reviewBy != ''">#{reviewBy},</if>
+            <if test="reviewTime != null">#{reviewTime},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            sysdate()
+        )
+    </insert>
+
+    <update id="updateXfHandlingReport" parameterType="XfHandlingReport">
+        update xf_handling_report
+        <set>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="assignId != null">assign_id = #{assignId},</if>
+            <if test="reportDeptId != null">report_dept_id = #{reportDeptId},</if>
+            <if test="reportDeptName != null">report_dept_name = #{reportDeptName},</if>
+            <if test="reportContent != null">report_content = #{reportContent},</if>
+            <if test="handlingOpinion != null">handling_opinion = #{handlingOpinion},</if>
+            <if test="reportBy != null">report_by = #{reportBy},</if>
+            <if test="reportTime != null">report_time = #{reportTime},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="reviewOpinion != null">review_opinion = #{reviewOpinion},</if>
+            <if test="reviewBy != null">review_by = #{reviewBy},</if>
+            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfHandlingReportById" parameterType="Long">
+        delete from xf_handling_report where id = #{id}
+    </delete>
+
+    <delete id="deleteXfHandlingReportByIds" parameterType="Long">
+        delete from xf_handling_report where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

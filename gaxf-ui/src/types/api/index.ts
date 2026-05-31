@@ -28,8 +28,11 @@ export * from "./monitor/online";
 // 代码生成模块
 export * from "./tool/gen";
 
-// SPDC 业务模块
-export * from "./spdc/camera";
-export * from "./spdc/alert";
-export * from "./spdc/dict";
-export * from "./spdc/pga";
+// XF 信访业务模块
+export * from "./xf/workOrder";
+export * from "./xf/assign";
+export * from "./xf/review";
+export * from "./xf/dossier";
+export * from "./xf/document";
+export * from "./xf/message";
+export * from "./xf/statistics";

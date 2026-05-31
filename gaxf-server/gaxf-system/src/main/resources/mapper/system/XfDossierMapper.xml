@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaxf.system.mapper.XfDossierMapper">
+
+    <resultMap type="XfDossier" id="XfDossierResult">
+        <id     property="id"              column="id"               />
+        <result property="orderId"         column="order_id"         />
+        <result property="fileName"        column="file_name"        />
+        <result property="filePath"        column="file_path"        />
+        <result property="fileType"        column="file_type"        />
+        <result property="fileSize"        column="file_size"        />
+        <result property="uploadBy"        column="upload_by"        />
+        <result property="uploadTime"      column="upload_time"      />
+        <result property="delFlag"         column="del_flag"         />
+        <result property="createBy"        column="create_by"        />
+        <result property="createTime"      column="create_time"      />
+        <result property="updateBy"        column="update_by"        />
+        <result property="updateTime"      column="update_time"      />
+        <result property="remark"          column="remark"           />
+    </resultMap>
+
+    <sql id="selectXfDossierVo">
+        select id, order_id, file_name, file_path, file_type, file_size, upload_by,
+               upload_time, del_flag, create_by, create_time, update_by, update_time, remark
+        from xf_dossier
+    </sql>
+
+    <select id="selectXfDossierById" parameterType="Long" resultMap="XfDossierResult">
+        <include refid="selectXfDossierVo"/>
+        where id = #{id} and del_flag = '0'
+    </select>
+
+    <select id="selectXfDossierList" parameterType="XfDossier" resultMap="XfDossierResult">
+        <include refid="selectXfDossierVo"/>
+        <where>
+            del_flag = '0'
+            <if test="orderId != null">
+                AND order_id = #{orderId}
+            </if>
+            <if test="fileName != null and fileName != ''">
+                AND file_name like concat('%', #{fileName}, '%')
+            </if>
+            <if test="fileType != null and fileType != ''">
+                AND file_type = #{fileType}
+            </if>
+            <if test="uploadBy != null and uploadBy != ''">
+                AND upload_by like concat('%', #{uploadBy}, '%')
+            </if>
+        </where>
+        order by upload_time desc
+    </select>
+
+    <select id="selectXfDossierByOrderId" parameterType="Long" resultMap="XfDossierResult">
+        <include refid="selectXfDossierVo"/>
+        where order_id = #{orderId} and del_flag = '0'
+        order by upload_time desc
+    </select>
+
+    <insert id="insertXfDossier" parameterType="XfDossier" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_dossier(
+            <if test="orderId != null">order_id,</if>
+            <if test="fileName != null and fileName != ''">file_name,</if>
+            <if test="filePath != null and filePath != ''">file_path,</if>
+            <if test="fileType != null and fileType != ''">file_type,</if>
+            <if test="fileSize != null">file_size,</if>
+            <if test="uploadBy != null and uploadBy != ''">upload_by,</if>
+            <if test="uploadTime != null">upload_time,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            create_time
+        )values(
+            <if test="orderId != null">#{orderId},</if>
+            <if test="fileName != null and fileName != ''">#{fileName},</if>
+            <if test="filePath != null and filePath != ''">#{filePath},</if>
+            <if test="fileType != null and fileType != ''">#{fileType},</if>
+            <if test="fileSize != null">#{fileSize},</if>
+            <if test="uploadBy != null and uploadBy != ''">#{uploadBy},</if>
+            <if test="uploadTime != null">#{uploadTime},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            sysdate()
+        )
+    </insert>
+
+    <update id="updateXfDossier" parameterType="XfDossier">
+        update xf_dossier
+        <set>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="fileName != null and fileName != ''">file_name = #{fileName},</if>
+            <if test="filePath != null">file_path = #{filePath},</if>
+            <if test="fileType != null">file_type = #{fileType},</if>
+            <if test="fileSize != null">file_size = #{fileSize},</if>
+            <if test="uploadBy != null">upload_by = #{uploadBy},</if>
+            <if test="uploadTime != null">upload_time = #{uploadTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="deleteXfDossierById" parameterType="Long">
+        update xf_dossier set del_flag = '2' where id = #{id}
+    </update>
+
+    <update id="deleteXfDossierByIds" parameterType="Long">
+        update xf_dossier set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+</mapper>

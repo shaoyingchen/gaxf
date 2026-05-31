@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaxf.system.mapper.XfWorkOrderMapper">
+
+    <resultMap type="XfWorkOrder" id="XfWorkOrderResult">
+        <id     property="id"                   column="id"                    />
+        <result property="xfCaseNo"             column="xf_case_no"            />
+        <result property="title"                column="title"                 />
+        <result property="sourceType"           column="source_type"           />
+        <result property="content"              column="content"               />
+        <result property="petitionerName"       column="petitioner_name"       />
+        <result property="petitionerIdcard"     column="petitioner_idcard"     />
+        <result property="petitionerPhone"      column="petitioner_phone"      />
+        <result property="petitionerAddress"    column="petitioner_address"    />
+        <result property="xfContent"            column="xf_content"            />
+        <result property="registerTime"         column="register_time"         />
+        <result property="deadline"             column="deadline"              />
+        <result property="xfCaseStatus"         column="xf_case_status"        />
+        <result property="xfForm"               column="xf_form"               />
+        <result property="xfDate"               column="xf_date"               />
+        <result property="problemLocation"      column="problem_location"      />
+        <result property="abnormalDynamic"      column="abnormal_dynamic"      />
+        <result property="problemDate"          column="problem_date"          />
+        <result property="petitionerCount"      column="petitioner_count"      />
+        <result property="xfDemand"             column="xf_demand"             />
+        <result property="businessCategory"     column="business_category"     />
+        <result property="registerUnit"         column="register_unit"         />
+        <result property="archiveNo"            column="archive_no"            />
+        <result property="transferDest"         column="transfer_dest"         />
+        <result property="handleMethod"         column="handle_method"         />
+        <result property="specificHandleUnit"   column="specific_handle_unit"  />
+        <result property="completionStatus"     column="completion_status"     />
+        <result property="responsibleDept"      column="responsible_dept"      />
+        <result property="completionTime"       column="completion_time"       />
+        <result property="xfItemNo"             column="xf_item_no"            />
+        <result property="policeTypeName"       column="police_type_name"      />
+        <result property="xfPurpose"            column="xf_purpose"            />
+        <result property="status"               column="status"                />
+        <result property="overdueCount"         column="overdue_count"         />
+        <result property="isLocked"             column="is_locked"             />
+        <result property="isTop"                column="is_top"                />
+        <result property="createDeptId"         column="create_dept_id"        />
+        <result property="delFlag"              column="del_flag"              />
+        <result property="createBy"             column="create_by"             />
+        <result property="createTime"           column="create_time"           />
+        <result property="updateBy"             column="update_by"             />
+        <result property="updateTime"           column="update_time"           />
+        <result property="remark"               column="remark"                />
+        <result property="assignId"             column="assign_id"             />
+    </resultMap>
+
+    <sql id="selectXfWorkOrderVo">
+        select id, xf_case_no, title, source_type, content, petitioner_name, petitioner_idcard,
+               petitioner_phone, petitioner_address, xf_content, register_time, deadline,
+               xf_case_status, xf_form, xf_date, problem_location, abnormal_dynamic,
+               problem_date, petitioner_count, xf_demand, business_category, register_unit,
+               archive_no, transfer_dest, handle_method, specific_handle_unit,
+               completion_status, responsible_dept, completion_time, xf_item_no,
+               police_type_name, xf_purpose,
+               status, overdue_count, is_locked, is_top,
+               create_dept_id, del_flag, create_by, create_time, update_by, update_time, remark
+        from xf_work_order
+    </sql>
+
+    <select id="selectXfWorkOrderById" parameterType="Long" resultMap="XfWorkOrderResult">
+        <include refid="selectXfWorkOrderVo"/>
+        where id = #{id} and del_flag = '0'
+    </select>
+
+    <select id="selectXfWorkOrderList" parameterType="XfWorkOrder" resultMap="XfWorkOrderResult">
+        <include refid="selectXfWorkOrderVo"/>
+        <where>
+            del_flag = '0'
+            <if test="xfCaseNo != null and xfCaseNo != ''">
+                AND xf_case_no like concat('%', #{xfCaseNo}, '%')
+            </if>
+            <if test="title != null and title != ''">
+                AND title like concat('%', #{title}, '%')
+            </if>
+            <if test="sourceType != null and sourceType != ''">
+                AND source_type = #{sourceType}
+            </if>
+            <if test="petitionerName != null and petitionerName != ''">
+                AND petitioner_name like concat('%', #{petitionerName}, '%')
+            </if>
+            <if test="xfForm != null and xfForm != ''">
+                AND xf_form = #{xfForm}
+            </if>
+            <if test="businessCategory != null and businessCategory != ''">
+                AND business_category = #{businessCategory}
+            </if>
+            <if test="xfCaseStatus != null and xfCaseStatus != ''">
+                AND xf_case_status = #{xfCaseStatus}
+            </if>
+            <if test="registerUnit != null and registerUnit != ''">
+                AND register_unit like concat('%', #{registerUnit}, '%')
+            </if>
+            <if test="policeTypeName != null and policeTypeName != ''">
+                AND police_type_name like concat('%', #{policeTypeName}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="isLocked != null and isLocked != ''">
+                AND is_locked = #{isLocked}
+            </if>
+            <if test="isTop != null and isTop != ''">
+                AND is_top = #{isTop}
+            </if>
+            <if test="createDeptId != null">
+                AND create_dept_id = #{createDeptId}
+            </if>
+            <if test="params.beginTime != null and params.beginTime != ''">
+                and date_format(register_time,'%Y%m%d') &gt;= date_format(#{params.beginTime},'%Y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''">
+                and date_format(register_time,'%Y%m%d') &lt;= date_format(#{params.endTime},'%Y%m%d')
+            </if>
+        </where>
+        order by is_top desc, create_time desc
+    </select>
+
+    <select id="selectMyTodoList" parameterType="XfWorkOrder" resultMap="XfWorkOrderResult">
+        select wo.id, wo.xf_case_no, wo.title, wo.source_type, wo.content, wo.petitioner_name,
+               wo.petitioner_idcard, wo.petitioner_phone, wo.petitioner_address, wo.xf_content,
+               wo.register_time, wo.deadline, wo.xf_case_status, wo.xf_form, wo.xf_date,
+               wo.problem_location, wo.abnormal_dynamic, wo.problem_date, wo.petitioner_count,
+               wo.xf_demand, wo.business_category, wo.register_unit, wo.archive_no,
+               wo.transfer_dest, wo.handle_method, wo.specific_handle_unit, wo.completion_status,
+               wo.responsible_dept, wo.completion_time, wo.xf_item_no, wo.police_type_name,
+               wo.xf_purpose, wo.status, wo.overdue_count, wo.is_locked, wo.is_top,
+               wo.create_dept_id, wo.del_flag, wo.create_by, wo.create_time, wo.update_by,
+               wo.update_time, wo.remark,
+               ar.id as assign_id
+        from xf_work_order wo
+        left join xf_assign_record ar on wo.id = ar.order_id
+        <where>
+            wo.del_flag = '0'
+            <if test="params.assignDeptId != null">
+                AND ar.assign_dept_id = #{params.assignDeptId}
+            </if>
+            <if test="params.assignStatus != null and params.assignStatus != ''">
+                AND ar.status = #{params.assignStatus}
+            </if>
+            <if test="status != null and status != ''">
+                AND wo.status = #{status}
+            </if>
+        </where>
+        order by wo.is_top desc, wo.create_time desc
+    </select>
+
+    <select id="selectStatistics" resultType="java.util.Map">
+        select status, count(*) as count from xf_work_order where del_flag = '0' group by status
+    </select>
+
+    <select id="selectMyTodoStatistics" resultType="java.util.Map">
+        select ar.status, count(*) as count
+        from xf_assign_record ar
+        left join xf_work_order wo on ar.order_id = wo.id
+        where wo.del_flag = '0' and ar.assign_dept_id = #{deptId}
+        group by ar.status
+    </select>
+
+    <select id="selectOverdueList" resultMap="XfWorkOrderResult">
+        <include refid="selectXfWorkOrderVo"/>
+        where del_flag = '0' and status in ('0', '1') and deadline &lt; sysdate()
+    </select>
+
+    <insert id="insertXfWorkOrder" parameterType="XfWorkOrder" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_work_order(
+            <if test="xfCaseNo != null and xfCaseNo != ''">xf_case_no,</if>
+            <if test="title != null and title != ''">title,</if>
+            <if test="sourceType != null and sourceType != ''">source_type,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="petitionerName != null and petitionerName != ''">petitioner_name,</if>
+            <if test="petitionerIdcard != null and petitionerIdcard != ''">petitioner_idcard,</if>
+            <if test="petitionerPhone != null and petitionerPhone != ''">petitioner_phone,</if>
+            <if test="petitionerAddress != null and petitionerAddress != ''">petitioner_address,</if>
+            <if test="xfContent != null and xfContent != ''">xf_content,</if>
+            <if test="registerTime != null">register_time,</if>
+            <if test="deadline != null">deadline,</if>
+            <if test="xfCaseStatus != null and xfCaseStatus != ''">xf_case_status,</if>
+            <if test="xfForm != null and xfForm != ''">xf_form,</if>
+            <if test="xfDate != null">xf_date,</if>
+            <if test="problemLocation != null and problemLocation != ''">problem_location,</if>
+            <if test="abnormalDynamic != null and abnormalDynamic != ''">abnormal_dynamic,</if>
+            <if test="problemDate != null">problem_date,</if>
+            <if test="petitionerCount != null">petitioner_count,</if>
+            <if test="xfDemand != null and xfDemand != ''">xf_demand,</if>
+            <if test="businessCategory != null and businessCategory != ''">business_category,</if>
+            <if test="registerUnit != null and registerUnit != ''">register_unit,</if>
+            <if test="archiveNo != null and archiveNo != ''">archive_no,</if>
+            <if test="transferDest != null and transferDest != ''">transfer_dest,</if>
+            <if test="handleMethod != null and handleMethod != ''">handle_method,</if>
+            <if test="specificHandleUnit != null and specificHandleUnit != ''">specific_handle_unit,</if>
+            <if test="completionStatus != null and completionStatus != ''">completion_status,</if>
+            <if test="responsibleDept != null and responsibleDept != ''">responsible_dept,</if>
+            <if test="completionTime != null">completion_time,</if>
+            <if test="xfItemNo != null and xfItemNo != ''">xf_item_no,</if>
+            <if test="policeTypeName != null and policeTypeName != ''">police_type_name,</if>
+            <if test="xfPurpose != null and xfPurpose != ''">xf_purpose,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="overdueCount != null">overdue_count,</if>
+            <if test="isLocked != null and isLocked != ''">is_locked,</if>
+            <if test="isTop != null and isTop != ''">is_top,</if>
+            <if test="createDeptId != null">create_dept_id,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            create_time
+        )values(
+            <if test="xfCaseNo != null and xfCaseNo != ''">#{xfCaseNo},</if>
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="sourceType != null and sourceType != ''">#{sourceType},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="petitionerName != null and petitionerName != ''">#{petitionerName},</if>
+            <if test="petitionerIdcard != null and petitionerIdcard != ''">#{petitionerIdcard},</if>
+            <if test="petitionerPhone != null and petitionerPhone != ''">#{petitionerPhone},</if>
+            <if test="petitionerAddress != null and petitionerAddress != ''">#{petitionerAddress},</if>
+            <if test="xfContent != null and xfContent != ''">#{xfContent},</if>
+            <if test="registerTime != null">#{registerTime},</if>
+            <if test="deadline != null">#{deadline},</if>
+            <if test="xfCaseStatus != null and xfCaseStatus != ''">#{xfCaseStatus},</if>
+            <if test="xfForm != null and xfForm != ''">#{xfForm},</if>
+            <if test="xfDate != null">#{xfDate},</if>
+            <if test="problemLocation != null and problemLocation != ''">#{problemLocation},</if>
+            <if test="abnormalDynamic != null and abnormalDynamic != ''">#{abnormalDynamic},</if>
+            <if test="problemDate != null">#{problemDate},</if>
+            <if test="petitionerCount != null">#{petitionerCount},</if>
+            <if test="xfDemand != null and xfDemand != ''">#{xfDemand},</if>
+            <if test="businessCategory != null and businessCategory != ''">#{businessCategory},</if>
+            <if test="registerUnit != null and registerUnit != ''">#{registerUnit},</if>
+            <if test="archiveNo != null and archiveNo != ''">#{archiveNo},</if>
+            <if test="transferDest != null and transferDest != ''">#{transferDest},</if>
+            <if test="handleMethod != null and handleMethod != ''">#{handleMethod},</if>
+            <if test="specificHandleUnit != null and specificHandleUnit != ''">#{specificHandleUnit},</if>
+            <if test="completionStatus != null and completionStatus != ''">#{completionStatus},</if>
+            <if test="responsibleDept != null and responsibleDept != ''">#{responsibleDept},</if>
+            <if test="completionTime != null">#{completionTime},</if>
+            <if test="xfItemNo != null and xfItemNo != ''">#{xfItemNo},</if>
+            <if test="policeTypeName != null and policeTypeName != ''">#{policeTypeName},</if>
+            <if test="xfPurpose != null and xfPurpose != ''">#{xfPurpose},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="overdueCount != null">#{overdueCount},</if>
+            <if test="isLocked != null and isLocked != ''">#{isLocked},</if>
+            <if test="isTop != null and isTop != ''">#{isTop},</if>
+            <if test="createDeptId != null">#{createDeptId},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            sysdate()
+        )
+    </insert>
+
+    <update id="updateXfWorkOrder" parameterType="XfWorkOrder">
+        update xf_work_order
+        <set>
+            <if test="xfCaseNo != null and xfCaseNo != ''">xf_case_no = #{xfCaseNo},</if>
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="sourceType != null and sourceType != ''">source_type = #{sourceType},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="petitionerName != null">petitioner_name = #{petitionerName},</if>
+            <if test="petitionerIdcard != null">petitioner_idcard = #{petitionerIdcard},</if>
+            <if test="petitionerPhone != null">petitioner_phone = #{petitionerPhone},</if>
+            <if test="petitionerAddress != null">petitioner_address = #{petitionerAddress},</if>
+            <if test="xfContent != null">xf_content = #{xfContent},</if>
+            <if test="registerTime != null">register_time = #{registerTime},</if>
+            <if test="deadline != null">deadline = #{deadline},</if>
+            <if test="xfCaseStatus != null and xfCaseStatus != ''">xf_case_status = #{xfCaseStatus},</if>
+            <if test="xfForm != null and xfForm != ''">xf_form = #{xfForm},</if>
+            <if test="xfDate != null">xf_date = #{xfDate},</if>
+            <if test="problemLocation != null">problem_location = #{problemLocation},</if>
+            <if test="abnormalDynamic != null">abnormal_dynamic = #{abnormalDynamic},</if>
+            <if test="problemDate != null">problem_date = #{problemDate},</if>
+            <if test="petitionerCount != null">petitioner_count = #{petitionerCount},</if>
+            <if test="xfDemand != null">xf_demand = #{xfDemand},</if>
+            <if test="businessCategory != null and businessCategory != ''">business_category = #{businessCategory},</if>
+            <if test="registerUnit != null">register_unit = #{registerUnit},</if>
+            <if test="archiveNo != null and archiveNo != ''">archive_no = #{archiveNo},</if>
+            <if test="transferDest != null">transfer_dest = #{transferDest},</if>
+            <if test="handleMethod != null and handleMethod != ''">handle_method = #{handleMethod},</if>
+            <if test="specificHandleUnit != null">specific_handle_unit = #{specificHandleUnit},</if>
+            <if test="completionStatus != null and completionStatus != ''">completion_status = #{completionStatus},</if>
+            <if test="responsibleDept != null">responsible_dept = #{responsibleDept},</if>
+            <if test="completionTime != null">completion_time = #{completionTime},</if>
+            <if test="xfItemNo != null and xfItemNo != ''">xf_item_no = #{xfItemNo},</if>
+            <if test="policeTypeName != null and policeTypeName != ''">police_type_name = #{policeTypeName},</if>
+            <if test="xfPurpose != null and xfPurpose != ''">xf_purpose = #{xfPurpose},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="overdueCount != null">overdue_count = #{overdueCount},</if>
+            <if test="isLocked != null and isLocked != ''">is_locked = #{isLocked},</if>
+            <if test="isTop != null and isTop != ''">is_top = #{isTop},</if>
+            <if test="createDeptId != null">create_dept_id = #{createDeptId},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="deleteXfWorkOrderById" parameterType="Long">
+        update xf_work_order set del_flag = '2' where id = #{id}
+    </update>
+
+    <update id="deleteXfWorkOrderByIds" parameterType="Long">
+        update xf_work_order set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+</mapper>
