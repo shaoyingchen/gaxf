@@ -14,7 +14,7 @@
       </div>
       <div class="stat-card">
         <div class="stat-info">
-          <h4><LucideLoader class="icon-small" /> 办理中</h4>
+          <h4><LucideLoader class="icon-small" /> 待提交</h4>
           <div class="stat-number blue">{{ overview.inProgressCount || 0 }}</div>
           <small>正在处理</small>
         </div>
@@ -154,7 +154,7 @@ const statusDistribution = computed(() => {
   const total = overview.value.totalCount || 1
   return [
     { name: '待派单', count: overview.value.pendingCount, percent: Math.round((overview.value.pendingCount / total) * 100), color: '#F59E0B' },
-    { name: '办理中', count: overview.value.inProgressCount, percent: Math.round((overview.value.inProgressCount / total) * 100), color: '#3B82F6' },
+    { name: '待提交', count: overview.value.inProgressCount, percent: Math.round((overview.value.inProgressCount / total) * 100), color: '#3B82F6' },
     { name: '已超期', count: overview.value.overdueCount, percent: Math.round((overview.value.overdueCount / total) * 100), color: '#EF4444' },
     { name: '已办结', count: overview.value.completedCount, percent: Math.round((overview.value.completedCount / total) * 100), color: '#10B981' },
     { name: '已退回', count: overview.value.returnedCount, percent: Math.round((overview.value.returnedCount / total) * 100), color: '#8B5CF6' }
@@ -267,7 +267,7 @@ function getStatusClass(status: string | undefined) {
 function getStatusText(status: string | undefined) {
   if (!status) return '未知'
   const map: Record<string, string> = {
-    '0': '待派单', '1': '办理中', '2': '已上报',
+    '0': '待派单', '1': '待提交', '2': '审批中',
     '3': '已办结', '4': '已退回', '5': '已超期'
   }
   return map[status] || status
