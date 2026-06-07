@@ -2,6 +2,13 @@
 -- 信访事项交办反馈系统 数据库表结构
 -- =============================================
 
+-- 注意：本文件为全量初始化脚本，仅适用于全新库初始化。
+-- 已有环境如已存在审批流相关表或业务数据，请勿直接重复执行本文件中的 DROP/CREATE 语句。
+-- 下列条目仅用于标识既有环境所需同步变更项，增量迁移请使用独立 SQL 单独执行：
+--   1) 新增表：xf_approve_flow_branch
+--   2) 新增字段：xf_approve_flow_stage.stage_type
+--   3) 新增字段：xf_approve_task.task_type、undertake_dept_id、undertake_dept_name
+
 -- 1. 信访工单表
 DROP TABLE IF EXISTS xf_work_order;
 CREATE TABLE xf_work_order (
@@ -37,7 +44,7 @@ CREATE TABLE xf_work_order (
   xf_item_no           VARCHAR(100)                         COMMENT '信访事项编号',
   police_type_name     VARCHAR(200)                         COMMENT '警种名称',
   xf_purpose           VARCHAR(500)                         COMMENT '信访目的(登记单位)',
-  status               CHAR(1)      DEFAULT '0'             COMMENT '工单状态: 0=待派单 1=办理中 2=已上报 3=已办结 4=已退回 5=已超期',
+  status               CHAR(1)      DEFAULT '0'             COMMENT '工单状态: 0=待派单 1=待提交 2=审批中 3=已办结 4=已退回 5=已超期',
   overdue_count        INT          DEFAULT 0               COMMENT '超期次数',
   is_locked            CHAR(1)      DEFAULT '0'             COMMENT '是否锁定: 0=否 1=是',
   is_top               CHAR(1)      DEFAULT '0'             COMMENT '是否置顶: 0=否 1=是',
@@ -193,3 +200,24 @@ CREATE TABLE xf_message (
   KEY idx_receiver_id (receiver_id),
   KEY idx_order_id (order_id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='站内消息表';
+
+-- 9. 审批流程承办单位分支映射表
+DROP TABLE IF EXISTS xf_approve_flow_branch;
+CREATE TABLE xf_approve_flow_branch (
+  id                    BIGINT       NOT NULL AUTO_INCREMENT COMMENT '分支映射ID',
+  flow_config_id        BIGINT       NOT NULL                COMMENT '流程配置ID',
+  undertake_dept_id     BIGINT       NOT NULL                COMMENT '承办单位ID',
+  undertake_dept_name   VARCHAR(100) NOT NULL                COMMENT '承办单位名称',
+  first_approve_dept_id BIGINT       NOT NULL                COMMENT '首审部门ID',
+  first_approve_dept_name VARCHAR(100) NOT NULL              COMMENT '首审部门名称',
+  create_by             VARCHAR(64)  DEFAULT ''              COMMENT '创建者',
+  create_time           DATETIME                             COMMENT '创建时间',
+  update_by             VARCHAR(64)  DEFAULT ''              COMMENT '更新者',
+  update_time           DATETIME                             COMMENT '更新时间',
+  remark                VARCHAR(500) DEFAULT NULL            COMMENT '备注',
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_flow_config_undertake_dept (flow_config_id, undertake_dept_id),
+  KEY idx_flow_config_id (flow_config_id),
+  KEY idx_undertake_dept_id (undertake_dept_id),
+  KEY idx_first_approve_dept_id (first_approve_dept_id)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='审批流程承办单位分支映射表';

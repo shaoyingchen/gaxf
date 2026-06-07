@@ -72,6 +72,14 @@ export function getImportProgress(taskId: string): Promise<AjaxResult> {
   })
 }
 
+// 查询审批进度
+export function getApproveProgress(orderId: number): Promise<AjaxResult> {
+  return request({
+    url: '/xf/workOrder/approveProgress/' + orderId,
+    method: 'get'
+  })
+}
+
 // 交办派单
 export function assignWorkOrder(data: AssignParams): Promise<AjaxResult> {
   return request({

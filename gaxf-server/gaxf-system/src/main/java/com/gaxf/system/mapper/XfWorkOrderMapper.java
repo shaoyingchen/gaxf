@@ -88,4 +88,11 @@ public interface XfWorkOrderMapper
      * @return 超期工单列表
      */
     public List<XfWorkOrder> selectOverdueList();
+
+    /**
+     * 查询月度趋势统计数据
+     *
+     * @return 月度趋势列表
+     */
+    public List<Map<String, Object>> selectMonthlyTrend();
 }

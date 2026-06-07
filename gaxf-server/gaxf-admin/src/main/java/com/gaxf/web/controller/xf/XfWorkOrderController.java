@@ -21,6 +21,7 @@ import com.gaxf.common.core.page.TableDataInfo;
 import com.gaxf.common.enums.BusinessType;
 import com.gaxf.common.utils.poi.ExcelUtil;
 import com.gaxf.system.domain.XfWorkOrder;
+import com.gaxf.system.service.IXfApproveRuntimeService;
 import com.gaxf.system.service.IXfWorkOrderService;
 
 /**
@@ -34,6 +35,9 @@ public class XfWorkOrderController extends BaseController
 {
     @Autowired
     private IXfWorkOrderService xfWorkOrderService;
+
+    @Autowired
+    private IXfApproveRuntimeService xfApproveRuntimeService;
 
     /**
      * 获取信访工单列表
@@ -153,6 +157,16 @@ public class XfWorkOrderController extends BaseController
         }
         xfWorkOrderService.assignWorkOrder(orderId, deptIds, deadline, deptNames);
         return success();
+    }
+
+    /**
+     * 查询审批进度
+     */
+    @PreAuthorize("@ss.hasPermi('xf:workOrder:list')")
+    @GetMapping("/approveProgress/{orderId}")
+    public AjaxResult approveProgress(@PathVariable Long orderId)
+    {
+        return success(xfApproveRuntimeService.selectProgressByOrderId(orderId));
     }
 
     /**

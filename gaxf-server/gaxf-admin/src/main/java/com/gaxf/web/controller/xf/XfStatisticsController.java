@@ -50,8 +50,8 @@ public class XfStatisticsController extends BaseController
     {
         Map<String, Object> data = xfWorkOrderService.selectStatistics();
         Map<String, Object> result = new HashMap<>();
-        int overdueCount = data.get("overdue") != null ? ((Number) data.get("overdue")).intValue() : 0;
-        int total = data.get("total") != null ? ((Number) data.get("total")).intValue() : 0;
+        int overdueCount = data.get("overdueCount") != null ? ((Number) data.get("overdueCount")).intValue() : 0;
+        int total = data.get("totalCount") != null ? ((Number) data.get("totalCount")).intValue() : 0;
         result.put("overdueCount", overdueCount);
         result.put("total", total);
         result.put("overdueRate", total > 0 ? String.format("%.2f", (double) overdueCount / total * 100) : "0.00");
@@ -67,8 +67,8 @@ public class XfStatisticsController extends BaseController
     {
         Map<String, Object> data = xfWorkOrderService.selectStatistics();
         Map<String, Object> result = new HashMap<>();
-        int total = data.get("total") != null ? ((Number) data.get("total")).intValue() : 0;
-        int finished = data.get("finished") != null ? ((Number) data.get("finished")).intValue() : 0;
+        int total = data.get("totalCount") != null ? ((Number) data.get("totalCount")).intValue() : 0;
+        int finished = data.get("completedCount") != null ? ((Number) data.get("completedCount")).intValue() : 0;
         result.put("total", total);
         result.put("finished", finished);
         result.put("completionRate", total > 0 ? String.format("%.2f", (double) finished / total * 100) : "0.00");
@@ -84,11 +84,22 @@ public class XfStatisticsController extends BaseController
     {
         Map<String, Object> data = xfWorkOrderService.selectStatistics();
         Map<String, Object> result = new HashMap<>();
-        int total = data.get("total") != null ? ((Number) data.get("total")).intValue() : 0;
-        int returned = data.get("returned") != null ? ((Number) data.get("returned")).intValue() : 0;
+        int total = data.get("totalCount") != null ? ((Number) data.get("totalCount")).intValue() : 0;
+        int returned = data.get("returnedCount") != null ? ((Number) data.get("returnedCount")).intValue() : 0;
         result.put("total", total);
         result.put("returned", returned);
         result.put("returnRate", total > 0 ? String.format("%.2f", (double) returned / total * 100) : "0.00");
         return success(result);
+    }
+
+    /**
+     * 月度趋势统计
+     */
+    @PreAuthorize("@ss.hasPermi('xf:statistics:list')")
+    @GetMapping("/monthlyTrend")
+    public AjaxResult monthlyTrend()
+    {
+        List<Map<String, Object>> data = xfWorkOrderService.selectMonthlyTrend();
+        return success(data);
     }
 }

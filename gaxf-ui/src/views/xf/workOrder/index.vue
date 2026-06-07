@@ -29,10 +29,6 @@
             <LucideUpload :size="16" />
             <span>导入Excel</span>
           </button>
-          <button class="action-btn" @click="showFilterDialog = true">
-            <LucideSlidersHorizontal :size="16" />
-            <span>筛选</span>
-          </button>
           <button class="action-btn" @click="handleExport">
             <LucideDownload :size="16" />
             <span>导出</span>
@@ -50,7 +46,7 @@
         <div class="stat-chip progress">
           <LucideLoader :size="16" />
           <span class="chip-value">{{ stats.inProgressCount }}</span>
-          <span class="chip-label">办理中</span>
+          <span class="chip-label">待提交</span>
         </div>
         <div class="stat-chip overdue">
           <LucideAlertTriangle :size="16" />
@@ -66,6 +62,85 @@
           <LucideRotateCcw :size="16" />
           <span class="chip-value">{{ stats.returnedCount }}</span>
           <span class="chip-label">已退回</span>
+        </div>
+      </div>
+
+      <!-- 筛选区域 -->
+      <div class="filter-section" :class="{ collapsed: !filterExpanded }">
+        <el-form
+          v-show="filterExpanded"
+          :model="queryParams"
+          class="filter-form"
+          size="default"
+          label-width="80px"
+        >
+          <div class="filter-grid">
+            <el-form-item label="信访件编号">
+              <el-input v-model="queryParams.xfCaseNo" placeholder="请输入" clearable />
+            </el-form-item>
+            <el-form-item label="工单标题">
+              <el-input v-model="queryParams.title" placeholder="请输入" clearable />
+            </el-form-item>
+            <el-form-item label="信访形式">
+              <el-select v-model="queryParams.xfForm" placeholder="请选择" clearable>
+                <el-option label="来信" value="来信" />
+                <el-option label="来访" value="来访" />
+                <el-option label="网上信访" value="网上信访" />
+                <el-option label="电话信访" value="电话信访" />
+                <el-option label="其他" value="其他" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="业务分类">
+              <el-input v-model="queryParams.businessCategory" placeholder="请输入" clearable />
+            </el-form-item>
+            <el-form-item label="登记单位">
+              <el-input v-model="queryParams.registerUnit" placeholder="请输入" clearable />
+            </el-form-item>
+            <el-form-item label="警种名称">
+              <el-input v-model="queryParams.policeTypeName" placeholder="请输入" clearable />
+            </el-form-item>
+            <el-form-item label="来源类型">
+              <el-select v-model="queryParams.sourceType" placeholder="请选择" clearable>
+                <el-option label="Excel导入" value="0" />
+                <el-option label="手动新建" value="1" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="登记时间" class="date-range-item">
+              <el-date-picker
+                v-model="timeRange"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                value-format="YYYY-MM-DD"
+                @change="handleTimeRangeChange"
+              />
+            </el-form-item>
+            <div class="filter-actions">
+              <button class="filter-btn primary" @click.prevent="handleFilter">
+                <LucideSearch :size="13" />
+                <span>查询</span>
+              </button>
+              <button class="filter-btn" @click.prevent="handleResetFilter">
+                <LucideRefreshCcw :size="13" />
+                <span>重置</span>
+              </button>
+              <button class="filter-btn ghost" @click.prevent="filterExpanded = false">
+                <LucideChevronUp :size="13" />
+                <span>收起</span>
+              </button>
+            </div>
+          </div>
+        </el-form>
+        <div v-if="!filterExpanded" class="filter-collapsed-bar">
+          <div class="filter-title">
+            <LucideFilter :size="14" />
+            <span>筛选条件已收起</span>
+          </div>
+          <button class="filter-btn ghost" @click.prevent="filterExpanded = true">
+            <LucideChevronDown :size="13" />
+            <span>展开</span>
+          </button>
         </div>
       </div>
 
@@ -123,6 +198,7 @@
                     <LucideEye :size="14" />
                   </button>
                 </el-tooltip>
+
                 <el-tooltip v-if="row.status === '0'" content="交办" placement="top">
                   <button class="action-icon-btn assign" @click.stop="handleAssign(row)">
                     <LucideSend :size="14" />
@@ -345,56 +421,6 @@
       </template>
     </el-dialog>
 
-    <!-- 高级筛选对话框 -->
-    <el-dialog v-model="showFilterDialog" title="高级筛选" width="480px" class="xf-dialog">
-      <el-form :model="queryParams" label-width="80px">
-        <el-form-item label="信访件编号">
-          <el-input v-model="queryParams.xfCaseNo" placeholder="请输入信访件编号" clearable />
-        </el-form-item>
-        <el-form-item label="工单标题">
-          <el-input v-model="queryParams.title" placeholder="请输入标题关键字" clearable />
-        </el-form-item>
-        <el-form-item label="信访形式">
-          <el-select v-model="queryParams.xfForm" placeholder="请选择" clearable>
-            <el-option label="来信" value="来信" />
-            <el-option label="来访" value="来访" />
-            <el-option label="网上信访" value="网上信访" />
-            <el-option label="电话信访" value="电话信访" />
-            <el-option label="其他" value="其他" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="业务分类">
-          <el-input v-model="queryParams.businessCategory" placeholder="请输入公安业务分类" clearable />
-        </el-form-item>
-        <el-form-item label="登记单位">
-          <el-input v-model="queryParams.registerUnit" placeholder="请输入登记单位" clearable />
-        </el-form-item>
-        <el-form-item label="警种名称">
-          <el-input v-model="queryParams.policeTypeName" placeholder="请输入警种名称" clearable />
-        </el-form-item>
-        <el-form-item label="来源类型">
-          <el-select v-model="queryParams.sourceType" placeholder="请选择" clearable>
-            <el-option label="Excel导入" value="0" />
-            <el-option label="手动新建" value="1" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="登记时间">
-          <el-date-picker
-            v-model="timeRange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始"
-            end-placeholder="结束"
-            value-format="YYYY-MM-DD"
-            @change="handleTimeRangeChange"
-          />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="handleResetFilter">重置</el-button>
-        <el-button type="primary" @click="handleFilter">筛选</el-button>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
@@ -405,10 +431,11 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import {
-  LucideClipboardList, LucideSlidersHorizontal, LucidePlus, LucideUpload,
+  LucideClipboardList, LucidePlus, LucideUpload,
   LucideDownload, LucideClock, LucideLoader, LucideAlertTriangle,
   LucideCheckCircle, LucideRotateCcw, LucideEye, LucideSend,
-  LucideTrash2, LucideFileSpreadsheet
+  LucideTrash2, LucideFileSpreadsheet, LucideFilter, LucideChevronDown,
+  LucideChevronUp, LucideSearch, LucideRefreshCcw
 } from 'lucide-vue-next'
 import { listWorkOrder, addWorkOrder, delWorkOrder, assignWorkOrder, workOrderStatistics, importWorkOrder, getImportProgress } from '@/api/xf/workOrder'
 import { deptTree } from '@/api/system/dept'
@@ -419,7 +446,8 @@ const router = useRouter()
 
 const loading = ref(false)
 const currentFilter = ref(0)
-const filters = ['全部', '待派单', '办理中', '已超期', '已办结', '已退回']
+const filters = ['全部', '待派单', '待提交', '审批中', '已超期', '已办结', '已退回']
+const filterExpanded = ref(true)
 
 const workOrderList = ref<XfWorkOrder[]>([])
 const total = ref(0)
@@ -432,7 +460,6 @@ const queryParams = ref<WorkOrderQueryParams>({
 })
 
 const timeRange = ref<[string, string] | null>(null)
-const showFilterDialog = ref(false)
 const showAddDialog = ref(false)
 const showImportDialog = ref(false)
 const showAssignDialog = ref(false)
@@ -496,16 +523,17 @@ const deptTreeLoading = ref(false)
 const assignForm = ref<AssignParams>({
   orderId: 0,
   deptIds: [],
+  deptNames: [],
   deadline: ''
 })
 const assignFormRules = {
-  deptIds: [{ required: true, message: '请选择承办单位', trigger: 'change' }],
+  deptIds: [{ type: 'array', required: true, message: '请选择承办单位', trigger: 'change' }],
   deadline: [{ required: true, message: '请选择办理期限', trigger: 'change' }]
 }
 
 // Sort list: overdue > in-progress > completed
 const sortedList = computed(() => {
-  const priority: Record<string, number> = { '5': 0, '1': 1, '2': 2, '0': 3, '4': 4, '3': 5 }
+  const priority: Record<string, number> = { '5': 0, '2': 1, '1': 2, '0': 3, '4': 4, '3': 5 }
   return [...workOrderList.value].sort((a, b) => {
     const aP = priority[a.status || '0'] ?? 9
     const bP = priority[b.status || '0'] ?? 9
@@ -522,9 +550,10 @@ watch(currentFilter, (val) => {
   queryParams.value.status = undefined
   if (val === 1) queryParams.value.status = '0'
   else if (val === 2) queryParams.value.status = '1'
-  else if (val === 3) queryParams.value.status = '5'
-  else if (val === 4) queryParams.value.status = '3'
-  else if (val === 5) queryParams.value.status = '4'
+  else if (val === 3) queryParams.value.status = '2'
+  else if (val === 4) queryParams.value.status = '5'
+  else if (val === 5) queryParams.value.status = '3'
+  else if (val === 6) queryParams.value.status = '4'
   pageNum.value = 1
   loadWorkOrderList()
 })
@@ -565,7 +594,6 @@ function handleTimeRangeChange(val: [string, string] | null) {
 }
 
 function handleFilter() {
-  showFilterDialog.value = false
   pageNum.value = 1
   loadWorkOrderList()
 }
@@ -573,7 +601,6 @@ function handleFilter() {
 function handleResetFilter() {
   queryParams.value = { pageNum: 1, pageSize: 10 }
   timeRange.value = null
-  showFilterDialog.value = false
   currentFilter.value = 0
   loadWorkOrderList()
 }
@@ -607,7 +634,7 @@ async function submitAdd() {
 
 function handleAssign(row: XfWorkOrder) {
   currentOrder.value = row
-  assignForm.value = { orderId: row.id || 0, deptIds: [], deadline: '' }
+  assignForm.value = { orderId: row.id || 0, deptIds: [], deptNames: [], deadline: '' }
   deptFilterText.value = ''
   loadDeptTree()
   showAssignDialog.value = true
@@ -637,26 +664,27 @@ function filterDeptNode(value: string, data: any) {
 function handleDeptCheck() {
   const checkedNodes = deptTreeRef.value?.getCheckedNodes() || []
   assignForm.value.deptIds = checkedNodes.map((n: any) => n.id)
+  assignForm.value.deptNames = checkedNodes.map((n: any) => n.label || n.deptName || '')
 }
 
 async function submitAssign() {
-  try {
-    await assignFormRef.value.validate()
-  } catch { return }
-
   if (assignForm.value.deptIds.length === 0) {
     ElMessage.warning('请选择至少一个承办单位')
+    return
+  }
+  if (!assignForm.value.deadline) {
+    ElMessage.warning('请选择办理期限')
     return
   }
 
   try {
     await assignWorkOrder(assignForm.value)
-    ElMessage.success('交办成功')
+    ElMessage.success('交办成功，已自动发起审核流程')
     showAssignDialog.value = false
     loadWorkOrderList()
     loadStatistics()
-  } catch (error) {
-    ElMessage.error('交办失败')
+  } catch (error: any) {
+    ElMessage.error(error?.msg || error?.message || '交办失败')
   }
 }
 
@@ -763,7 +791,7 @@ function getStatusClass(status: string | undefined) {
 function getStatusText(status: string | undefined) {
   if (!status) return '未知'
   const map: Record<string, string> = {
-    '0': '待派单', '1': '办理中', '2': '已上报',
+    '0': '待派单', '1': '待提交', '2': '审批中',
     '3': '已办结', '4': '已退回', '5': '已超期'
   }
   return map[status] || status
@@ -803,18 +831,18 @@ $police-text: #1E293B;
 $police-text-muted: #64748B;
 
 .work-order-wrapper {
-  padding: 24px;
+  padding: 0;
   background: $police-bg;
   min-height: calc(100vh - 48px);
 }
 
 .main-card {
   background: white;
-  border-radius: 20px;
+  border-radius: 12px;
   border: 1px solid $police-border;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(30, 58, 138, 0.08);
-  min-height: calc(100vh - 100px);
+  box-shadow: 0 2px 12px rgba(30, 58, 138, 0.06);
+  min-height: calc(100vh - 48px);
   display: flex;
   flex-direction: column;
 }
@@ -823,7 +851,7 @@ $police-text-muted: #64748B;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
+  padding: 16px 18px;
   background: linear-gradient(135deg, $police-primary 0%, $police-blue 100%);
   color: white;
   flex-shrink: 0;
@@ -901,12 +929,140 @@ $police-text-muted: #64748B;
 
 .stats-section {
   display: flex;
-  gap: 16px;
-  padding: 16px 24px;
+  gap: 12px;
+  padding: 12px 16px;
   background: #F8FAFE;
   border-bottom: 1px solid $police-border;
   flex-shrink: 0;
   flex-wrap: wrap;
+}
+
+.filter-section {
+  margin: 12px 12px 0;
+  padding: 12px 14px;
+  background: #F8FAFE;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+
+  &.collapsed { padding: 8px 14px; }
+}
+
+.filter-collapsed-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filter-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: $police-text-muted;
+
+  svg { color: $police-blue; }
+}
+
+.filter-form {
+  .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: 12px;
+    row-gap: 8px;
+    align-items: center;
+
+    .date-range-item { grid-column: span 2; }
+    .filter-actions { grid-column: span 2; }
+
+    @media (max-width: 1400px) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      .filter-actions { grid-column: span 3; }
+    }
+    @media (max-width: 1100px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      .date-range-item { grid-column: span 2; }
+      .filter-actions { grid-column: span 2; }
+    }
+  }
+
+  :deep(.el-form-item) {
+    margin-bottom: 0;
+    margin-right: 0;
+  }
+
+  :deep(.el-form-item__label) {
+    font-size: 12px;
+    color: $police-text-muted;
+    font-weight: 500;
+    padding-right: 8px;
+  }
+
+  :deep(.el-input__wrapper),
+  :deep(.el-select__wrapper),
+  :deep(.el-date-editor.el-input__wrapper),
+  :deep(.el-range-editor.el-input__wrapper) {
+    border-radius: 6px;
+    background: white;
+    box-shadow: 0 0 0 1px #E2E8F0 inset;
+    transition: all 0.2s;
+
+    &:hover { box-shadow: 0 0 0 1px $police-light-blue inset; }
+    &.is-focus { box-shadow: 0 0 0 1px $police-blue inset !important; }
+  }
+
+  :deep(.el-input__inner),
+  :deep(.el-range-input) { font-size: 13px; color: $police-text; }
+
+  :deep(.el-range-editor.el-input__wrapper) { width: 100%; }
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid $police-border;
+  background: white;
+  color: $police-text;
+  cursor: pointer;
+  transition: all 0.2s;
+  height: 32px;
+  line-height: 1;
+
+  &:hover {
+    border-color: $police-light-blue;
+    color: $police-blue;
+  }
+
+  &.primary {
+    background: linear-gradient(135deg, $police-primary 0%, $police-blue 100%);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+
+    &:hover {
+      color: white;
+      box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
+    }
+  }
+
+  &.ghost {
+    border-color: transparent;
+    background: transparent;
+    color: $police-text-muted;
+    padding: 6px 10px;
+
+    &:hover { color: $police-blue; background: rgba(37, 99, 235, 0.06); }
+  }
 }
 
 .stat-chip {
@@ -932,7 +1088,7 @@ $police-text-muted: #64748B;
 }
 
 .table-section {
-  padding: 16px 24px;
+  padding: 12px 0 0;
   flex: 1;
 }
 
@@ -1013,7 +1169,7 @@ $police-text-muted: #64748B;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
+  padding: 12px 16px;
   background: #F8FAFE;
   border-top: 1px solid $police-border;
   flex-shrink: 0;

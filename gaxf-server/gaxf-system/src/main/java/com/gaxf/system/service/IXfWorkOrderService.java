@@ -114,4 +114,11 @@ public interface IXfWorkOrderService
      * @return 进度信息
      */
     public Map<String, Object> getImportProgress(String taskId);
+
+    /**
+     * 查询月度趋势统计数据
+     *
+     * @return 月度趋势列表
+     */
+    public List<Map<String, Object>> selectMonthlyTrend();
 }

@@ -163,7 +163,7 @@ public class XfAssignRecordServiceImpl implements IXfAssignRecordService
         record.setStatus("2");
         xfAssignRecordMapper.updateXfAssignRecord(record);
 
-        // 更新工单状态为已上报
+        // 更新工单状态为审批中
         XfWorkOrder workOrder = new XfWorkOrder();
         workOrder.setId(record.getOrderId());
         workOrder.setStatus("2");
@@ -245,7 +245,7 @@ public class XfAssignRecordServiceImpl implements IXfAssignRecordService
             }
         }
 
-        // 更新工单状态为已上报
+        // 更新工单状态为审批中
         XfWorkOrder workOrder = new XfWorkOrder();
         workOrder.setId(record.getOrderId());
         workOrder.setStatus("2");

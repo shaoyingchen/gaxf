@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaxf.system.mapper.XfApproveFlowConfigMapper">
+
+    <resultMap id="XfApproveFlowConfigResult" type="com.gaxf.system.domain.XfApproveFlowConfig">
+        <id property="id" column="id"/>
+        <result property="flowName" column="flow_name"/>
+        <result property="applyDeptId" column="apply_dept_id"/>
+        <result property="applyDeptName" column="apply_dept_name"/>
+        <result property="status" column="status"/>
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <collection property="stages" ofType="com.gaxf.system.domain.XfApproveFlowStage" select="selectStagesByFlowConfigId" column="id"/>
+    </resultMap>
+
+    <resultMap id="XfApproveFlowStageResult" type="com.gaxf.system.domain.XfApproveFlowStage">
+        <id property="id" column="id"/>
+        <result property="flowConfigId" column="flow_config_id"/>
+        <result property="stageNo" column="stage_no"/>
+        <result property="stageName" column="stage_name"/>
+        <result property="stageType" column="stage_type"/>
+        <result property="parallelMode" column="parallel_mode"/>
+        <collection property="deptList" ofType="com.gaxf.system.domain.XfApproveFlowStageDept" select="selectStageDeptsByStageId" column="id"/>
+    </resultMap>
+
+    <resultMap id="XfApproveFlowStageDeptResult" type="com.gaxf.system.domain.XfApproveFlowStageDept">
+        <id property="id" column="id"/>
+        <result property="stageId" column="stage_id"/>
+        <result property="approveDeptId" column="approve_dept_id"/>
+        <result property="approveDeptName" column="approve_dept_name"/>
+    </resultMap>
+
+    <select id="selectXfApproveFlowConfigById" parameterType="Long" resultMap="XfApproveFlowConfigResult">
+        select id, flow_name, apply_dept_id, apply_dept_name, status, remark,
+               create_by, create_time, update_by, update_time
+        from xf_approve_flow_config
+        where id = #{id}
+    </select>
+
+    <select id="selectXfApproveFlowConfigList" parameterType="com.gaxf.system.domain.XfApproveFlowConfig" resultMap="XfApproveFlowConfigResult">
+        select id, flow_name, apply_dept_id, apply_dept_name, status, remark,
+               create_by, create_time, update_by, update_time
+        from xf_approve_flow_config
+        <where>
+            <if test="flowName != null and flowName != ''">
+                and flow_name like concat('%', #{flowName}, '%')
+            </if>
+            <if test="applyDeptName != null and applyDeptName != ''">
+                and apply_dept_name like concat('%', #{applyDeptName}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectEnabledFlowByApplyDeptId" parameterType="Long" resultMap="XfApproveFlowConfigResult">
+        select id, flow_name, apply_dept_id, apply_dept_name, status, remark,
+               create_by, create_time, update_by, update_time
+        from xf_approve_flow_config
+        where apply_dept_id = #{applyDeptId} and status = '0'
+        limit 1
+    </select>
+
+    <select id="countEnabledFlowByApplyDeptId" resultType="int">
+        select count(1)
+        from xf_approve_flow_config
+        where apply_dept_id = #{applyDeptId}
+          and status = '0'
+        <if test="excludeId != null">
+          and id != #{excludeId}
+        </if>
+    </select>
+
+    <select id="selectStagesByFlowConfigId" parameterType="Long" resultMap="XfApproveFlowStageResult">
+        select id, flow_config_id, stage_no, stage_name, stage_type, parallel_mode
+        from xf_approve_flow_stage
+        where flow_config_id = #{id}
+        order by stage_no asc
+    </select>
+
+    <select id="selectStageDeptsByStageId" parameterType="Long" resultMap="XfApproveFlowStageDeptResult">
+        select id, stage_id, approve_dept_id, approve_dept_name
+        from xf_approve_flow_stage_dept
+        where stage_id = #{id}
+        order by id asc
+    </select>
+
+    <insert id="insertXfApproveFlowConfig" parameterType="com.gaxf.system.domain.XfApproveFlowConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_approve_flow_config(
+            flow_name, apply_dept_id, apply_dept_name, status, remark, create_by, create_time
+        ) values (
+            #{flowName}, #{applyDeptId}, #{applyDeptName}, #{status}, #{remark}, #{createBy}, sysdate()
+        )
+    </insert>
+
+    <update id="updateXfApproveFlowConfig" parameterType="com.gaxf.system.domain.XfApproveFlowConfig">
+        update xf_approve_flow_config
+        <set>
+            <if test="flowName != null and flowName != ''">flow_name = #{flowName},</if>
+            <if test="applyDeptId != null">apply_dept_id = #{applyDeptId},</if>
+            <if test="applyDeptName != null and applyDeptName != ''">apply_dept_name = #{applyDeptName},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfApproveFlowConfigByIds" parameterType="Long">
+        delete from xf_approve_flow_config where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteFlowStagesByConfigId" parameterType="Long">
+        delete from xf_approve_flow_stage where flow_config_id = #{flowConfigId}
+    </delete>
+
+    <delete id="deleteStageDeptsByConfigId" parameterType="Long">
+        delete from xf_approve_flow_stage_dept where stage_id in (
+            select id from xf_approve_flow_stage where flow_config_id = #{flowConfigId}
+        )
+    </delete>
+
+    <insert id="batchInsertFlowStages" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_approve_flow_stage(flow_config_id, stage_no, stage_name, stage_type, parallel_mode) values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.flowConfigId}, #{item.stageNo}, #{item.stageName}, #{item.stageType}, #{item.parallelMode})
+        </foreach>
+    </insert>
+
+    <insert id="batchInsertStageDepts">
+        insert into xf_approve_flow_stage_dept(stage_id, approve_dept_id, approve_dept_name) values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.stageId}, #{item.approveDeptId}, #{item.approveDeptName})
+        </foreach>
+    </insert>
+</mapper>

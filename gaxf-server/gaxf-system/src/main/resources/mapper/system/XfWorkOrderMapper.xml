@@ -130,7 +130,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                wo.xf_demand, wo.business_category, wo.register_unit, wo.archive_no,
                wo.transfer_dest, wo.handle_method, wo.specific_handle_unit, wo.completion_status,
                wo.responsible_dept, wo.completion_time, wo.xf_item_no, wo.police_type_name,
-               wo.xf_purpose, wo.status, wo.overdue_count, wo.is_locked, wo.is_top,
+               wo.xf_purpose, ar.status as status, wo.overdue_count, wo.is_locked, wo.is_top,
                wo.create_dept_id, wo.del_flag, wo.create_by, wo.create_time, wo.update_by,
                wo.update_time, wo.remark,
                ar.id as assign_id
@@ -145,7 +145,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 AND ar.status = #{params.assignStatus}
             </if>
             <if test="status != null and status != ''">
-                AND wo.status = #{status}
+                AND ar.status = #{status}
             </if>
         </where>
         order by wo.is_top desc, wo.create_time desc
@@ -308,5 +308,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </update>
+
+    <select id="selectMonthlyTrend" resultType="java.util.Map">
+        select
+            date_format(create_time, '%Y-%m') as month,
+            count(*) as newCount,
+            sum(case when status = '3' then 1 else 0 end) as completedCount,
+            sum(case when status = '5' then 1 else 0 end) as overdueCount
+        from xf_work_order
+        where del_flag = '0'
+        group by date_format(create_time, '%Y-%m')
+        order by month asc
+    </select>
 
 </mapper>

@@ -117,7 +117,7 @@ export const loadView = (view: string): any => {
   let res
   for (const path in modules) {
     const dir = path.split('views/')[1].split('.vue')[0]
-    if (dir === view) {
+    if (dir === view || dir === view + '/index') {
       res = () => modules[path]()
     }
   }

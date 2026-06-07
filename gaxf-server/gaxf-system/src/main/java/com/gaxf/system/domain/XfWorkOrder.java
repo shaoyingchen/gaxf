@@ -151,8 +151,8 @@ public class XfWorkOrder extends BaseEntity
     @Excel(name = "信访目的(登记单位)")
     private String xfPurpose;
 
-    /** 工单状态: 0=待派单 1=办理中 2=已上报 3=已办结 4=已退回 5=已超期 */
-    @Excel(name = "工单状态", readConverterExp = "0=待派单,1=办理中,2=已上报,3=已办结,4=已退回,5=已超期")
+    /** 工单状态: 0=待派单 1=待提交 2=审批中 3=已办结 4=已退回 5=已超期 */
+    @Excel(name = "工单状态", readConverterExp = "0=待派单,1=待提交,2=审批中,3=已办结,4=已退回,5=已超期")
     private String status;
 
     /** 超期次数 */
@@ -178,6 +178,21 @@ public class XfWorkOrder extends BaseEntity
 
     /** 当前用户的交办记录ID（非数据库字段，myTodo查询使用） */
     private Long assignId;
+
+    /** 最新审批实例ID（非数据库字段） */
+    private Long approveInstanceId;
+
+    /** 审批状态（非数据库字段） */
+    private String approveStatus;
+
+    /** 当前审批阶段（非数据库字段） */
+    private Integer currentApproveStage;
+
+    /** 审批任务列表（非数据库字段） */
+    private List<XfApproveTask> approveTaskList;
+
+    /** 承办单位首审任务列表（非数据库字段） */
+    private List<XfApproveTask> branchTaskList;
 
     public Long getId()
     {
@@ -579,6 +594,56 @@ public class XfWorkOrder extends BaseEntity
         this.assignId = assignId;
     }
 
+    public Long getApproveInstanceId()
+    {
+        return approveInstanceId;
+    }
+
+    public void setApproveInstanceId(Long approveInstanceId)
+    {
+        this.approveInstanceId = approveInstanceId;
+    }
+
+    public String getApproveStatus()
+    {
+        return approveStatus;
+    }
+
+    public void setApproveStatus(String approveStatus)
+    {
+        this.approveStatus = approveStatus;
+    }
+
+    public Integer getCurrentApproveStage()
+    {
+        return currentApproveStage;
+    }
+
+    public void setCurrentApproveStage(Integer currentApproveStage)
+    {
+        this.currentApproveStage = currentApproveStage;
+    }
+
+    public List<XfApproveTask> getApproveTaskList()
+    {
+        return approveTaskList;
+    }
+
+    public void setApproveTaskList(List<XfApproveTask> approveTaskList)
+    {
+        this.approveTaskList = approveTaskList;
+    }
+
+    public List<XfApproveTask> getBranchTaskList()
+    {
+        return branchTaskList;
+    }
+
+    public void setBranchTaskList(List<XfApproveTask> branchTaskList)
+    {
+        this.branchTaskList = branchTaskList;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -620,6 +685,10 @@ public class XfWorkOrder extends BaseEntity
             .append("isTop", getIsTop())
             .append("createDeptId", getCreateDeptId())
             .append("delFlag", getDelFlag())
+            .append("assignId", getAssignId())
+            .append("approveInstanceId", getApproveInstanceId())
+            .append("approveStatus", getApproveStatus())
+            .append("currentApproveStage", getCurrentApproveStage())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())

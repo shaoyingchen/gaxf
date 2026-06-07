@@ -16,6 +16,7 @@ This directory contains guidelines for backend development. Fill in each file wi
 |-------|-------------|--------|
 | [Directory Structure](./directory-structure.md) | Module organization and file layout | Active |
 | [Database Guidelines](./database-guidelines.md) | ORM patterns, queries, migrations | Active |
+| [Approval Flow Contracts](./approval-flow-contracts.md) | Work-order handover approval flow contracts | Active |
 | [Error Handling](./error-handling.md) | Error types, handling strategies | Active |
 | [Quality Guidelines](./quality-guidelines.md) | Code standards, forbidden patterns | Active |
 | [Logging Guidelines](./logging-guidelines.md) | Structured logging, log levels | Active |

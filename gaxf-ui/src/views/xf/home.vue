@@ -228,6 +228,8 @@ import DossierManage from './dossier/index.vue'
 import DocumentManage from './document/index.vue'
 import StatisticsPage from './statistics/index.vue'
 import MessagePage from './message/index.vue'
+import ApproveConfigPage from './approveConfig/index.vue'
+import ApproveTodoPage from './approveTodo/index.vue'
 
 // 系统管理组件
 import UserManage from '@/views/system/user/index.vue'
@@ -236,6 +238,7 @@ import MenuManage from '@/views/system/menu/index.vue'
 import DeptManage from '@/views/system/dept/index.vue'
 import PostManage from '@/views/system/post/index.vue'
 import DictManage from '@/views/system/dict/index.vue'
+import DictClassify from '@/views/system/dictClassify/index.vue'
 
 // 个人中心组件
 import ProfileCenter from '@/views/system/user/profile/index.vue'
@@ -322,6 +325,20 @@ const componentMap: Record<string, any> = {
   'xf/message': MessagePage,
   'message': MessagePage,
   'Xf/message': MessagePage,
+  // 审批配置组件
+  'xf/approveConfig/index': ApproveConfigPage,
+  'xf/approveConfig': ApproveConfigPage,
+  'xf/approve-config/index': ApproveConfigPage,
+  'xf/approve-config': ApproveConfigPage,
+  'approveConfig': ApproveConfigPage,
+  'Xf/approveConfig': ApproveConfigPage,
+  // 审批待办组件
+  'xf/approveTodo/index': ApproveTodoPage,
+  'xf/approveTodo': ApproveTodoPage,
+  'xf/approve-todo/index': ApproveTodoPage,
+  'xf/approve-todo': ApproveTodoPage,
+  'approveTodo': ApproveTodoPage,
+  'Xf/approveTodo': ApproveTodoPage,
   // 系统管理组件
   'system/user/index': UserManage,
   'system/user': UserManage,
@@ -347,6 +364,11 @@ const componentMap: Record<string, any> = {
   'system/dict': DictManage,
   'dict': DictManage,
   'System/dict': DictManage,
+  // 督察字典分类
+  'system/dictClassify/index': DictClassify,
+  'system/dictClassify': DictClassify,
+  'dictClassify': DictClassify,
+  'System/dictClassify': DictClassify,
 }
 
 // 需要排除的菜单名称

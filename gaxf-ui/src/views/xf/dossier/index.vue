@@ -19,14 +19,22 @@
 
       <!-- 筛选区域 -->
       <div class="filter-section">
-        <el-form :inline="true" :model="queryParams">
-          <el-form-item label="工单编号">
-            <el-input v-model="queryParams.xfCaseNo" placeholder="请输入信访件编号" clearable style="width: 200px" />
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="loadDossierList">查询</el-button>
-            <el-button @click="handleReset">重置</el-button>
-          </el-form-item>
+        <el-form :model="queryParams" class="filter-form">
+          <div class="filter-row">
+            <el-form-item label="工单编号">
+              <el-input v-model="queryParams.xfCaseNo" placeholder="请输入信访件编号" clearable style="width: 200px" />
+            </el-form-item>
+            <div class="filter-actions">
+              <button class="filter-btn primary" @click.prevent="loadDossierList">
+                <LucideSearch :size="13" />
+                <span>查询</span>
+              </button>
+              <button class="filter-btn" @click.prevent="handleReset">
+                <LucideRefreshCcw :size="13" />
+                <span>重置</span>
+              </button>
+            </div>
+          </div>
         </el-form>
       </div>
 
@@ -135,7 +143,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { LucideFolderOpen, LucideUpload, LucideFile, LucideEye, LucideTrash2, LucideFileX } from 'lucide-vue-next'
+import { LucideFolderOpen, LucideUpload, LucideFile, LucideEye, LucideTrash2, LucideFileX, LucideSearch, LucideRefreshCcw } from 'lucide-vue-next'
 import { listDossier, uploadDossier, delDossier } from '@/api/xf/dossier'
 import type { XfDossier } from '@/types/api/xf/dossier'
 
@@ -268,17 +276,17 @@ $police-border: #E2E8F0;
 $police-text: #1E293B;
 $police-text-muted: #64748B;
 
-.dossier-wrapper { padding: 24px; background: $police-bg; min-height: calc(100vh - 48px); }
+.dossier-wrapper { padding: 0; background: $police-bg; min-height: calc(100vh - 48px); }
 
 .main-card {
-  background: white; border-radius: 20px; border: 1px solid $police-border;
-  overflow: hidden; box-shadow: 0 4px 20px rgba(30, 58, 138, 0.08);
+  background: white; border-radius: 12px; border: 1px solid $police-border;
+  overflow: hidden; box-shadow: 0 2px 12px rgba(30, 58, 138, 0.06);
   display: flex; flex-direction: column;
 }
 
 .card-header {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 20px 24px; background: linear-gradient(135deg, $police-primary 0%, $police-blue 100%);
+  padding: 16px 18px; background: linear-gradient(135deg, $police-primary 0%, $police-blue 100%);
   color: white; flex-shrink: 0;
 }
 
@@ -302,9 +310,77 @@ $police-text-muted: #64748B;
   }
 }
 
-.filter-section { padding: 16px 24px; border-bottom: 1px solid $police-border; }
+.filter-section {
+  margin: 12px 12px 0;
+  padding: 12px 14px;
+  background: #F8FAFE;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+}
 
-.table-section { padding: 16px 24px; flex: 1; }
+.filter-form {
+  :deep(.el-form-item) {
+    margin-bottom: 0;
+    margin-right: 0;
+  }
+
+  :deep(.el-form-item__label) {
+    font-size: 12px;
+    color: $police-text-muted;
+    font-weight: 500;
+    padding-right: 8px;
+  }
+
+  :deep(.el-input__wrapper) {
+    border-radius: 6px;
+    background: white;
+    box-shadow: 0 0 0 1px #E2E8F0 inset;
+    transition: all 0.2s;
+    &:hover { box-shadow: 0 0 0 1px $police-light-blue inset; }
+    &.is-focus { box-shadow: 0 0 0 1px $police-blue inset !important; }
+  }
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid $police-border;
+  background: white;
+  color: $police-text;
+  cursor: pointer;
+  transition: all 0.2s;
+  height: 32px;
+  line-height: 1;
+
+  &:hover { border-color: $police-light-blue; color: $police-blue; }
+
+  &.primary {
+    background: linear-gradient(135deg, $police-primary 0%, $police-blue 100%);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+    &:hover { color: white; box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3); }
+  }
+}
+
+.table-section { padding: 12px 0 0; flex: 1; }
 
 .file-name-cell {
   display: flex; align-items: center; gap: 8px;
@@ -325,7 +401,7 @@ $police-text-muted: #64748B;
 
 .pagination-section {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 16px 24px; background: #F8FAFE; border-top: 1px solid $police-border; flex-shrink: 0;
+  padding: 12px 16px; background: #F8FAFE; border-top: 1px solid $police-border; flex-shrink: 0;
   .page-stats { font-size: 13px; color: $police-text-muted; strong { color: $police-text; } }
 }
 

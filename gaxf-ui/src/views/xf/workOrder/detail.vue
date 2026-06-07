@@ -212,6 +212,46 @@
           <!-- 审核记录 -->
           <el-tab-pane label="审核记录" name="review">
             <div class="tab-content">
+              <div v-if="branchTaskList.length > 0" class="approve-branch-block">
+                <div class="tab-header"><span>承办单位首审</span></div>
+                <div class="branch-review-grid">
+                  <div v-for="task in branchTaskList" :key="`branch-${task.id}`" class="branch-review-card">
+                    <div class="branch-path">
+                      <span class="branch-dept">{{ task.undertakeDeptName || '-' }}</span>
+                      <span class="branch-arrow">→</span>
+                      <span class="branch-approve">{{ task.approveDeptName }}</span>
+                    </div>
+                    <span class="status-badge small" :class="task.status === '1' ? 'status-done' : (task.status === '2' ? 'status-returned' : 'status-pending')">
+                      {{ getApproveTaskStatusText(task.status) }}
+                    </span>
+                    <div v-if="task.opinion" class="branch-opinion">{{ task.opinion }}</div>
+                  </div>
+                </div>
+              </div>
+              <div v-if="approveTaskList.length > 0" class="approve-progress-block">
+                <div class="tab-header"><span>审批进度</span></div>
+                <el-timeline>
+                  <el-timeline-item
+                    v-for="task in approveTaskList"
+                    :key="task.id"
+                    :timestamp="formatTime(task.actionTime || task.createTime)"
+                    placement="top"
+                    :type="task.status === '2' ? 'danger' : (task.status === '1' ? 'primary' : 'info')"
+                  >
+                    <div class="timeline-card">
+                      <div class="timeline-header">
+                        <span class="reviewer-name">{{ task.stageName }}</span>
+                        <span v-if="task.taskType === '0' && task.undertakeDeptName" class="review-type">{{ task.undertakeDeptName }} → {{ task.approveDeptName }}</span>
+                        <span v-else class="review-type">{{ task.approveDeptName }}</span>
+                        <span class="status-badge small" :class="task.status === '1' ? 'status-done' : (task.status === '2' ? 'status-returned' : 'status-pending')">
+                          {{ getApproveTaskStatusText(task.status) }}
+                        </span>
+                      </div>
+                      <div class="timeline-opinion" v-if="task.opinion">{{ task.opinion }}</div>
+                    </div>
+                  </el-timeline-item>
+                </el-timeline>
+              </div>
               <div v-if="reviewRecords.length === 0" class="empty-tab">
                 <LucideInbox :size="40" />
                 <span>暂无审核记录</span>
@@ -378,13 +418,14 @@ import {
   LucideInbox, LucideUpload, LucideFile, LucideTrash2, LucideEye,
   LucideFilePlus, LucidePenLine, LucideDownload, LucideClipboardList
 } from 'lucide-vue-next'
-import { getWorkOrder } from '@/api/xf/workOrder'
+import { getWorkOrder, getApproveProgress } from '@/api/xf/workOrder'
 import { listAssign } from '@/api/xf/assign'
 import { listReview } from '@/api/xf/review'
 import { listDossier, uploadDossier, delDossier } from '@/api/xf/dossier'
 import { listDocument, generateDocument, signDocument, downloadDocument } from '@/api/xf/document'
 import VuePdfEmbed from 'vue-pdf-embed'
 import type { XfWorkOrder } from '@/types/api/xf/workOrder'
+import type { ApproveTask, ApproveProgress } from '@/types/api/xf/approve'
 import type { XfAssignRecord } from '@/types/api/xf/assign'
 import type { XfReviewRecord } from '@/types/api/xf/review'
 import type { XfDossier } from '@/types/api/xf/dossier'
@@ -400,6 +441,9 @@ const activeTab = ref('report')
 
 const assignRecords = ref<XfAssignRecord[]>([])
 const reviewRecords = ref<XfReviewRecord[]>([])
+const approveProgress = ref<ApproveProgress | null>(null)
+const approveTaskList = ref<ApproveTask[]>([])
+const branchTaskList = ref<ApproveTask[]>([])
 const dossierList = ref<XfDossier[]>([])
 const documentList = ref<XfDocument[]>([])
 
@@ -431,10 +475,25 @@ async function loadOrderDetail() {
   try {
     const res = await getWorkOrder(orderId)
     orderData.value = (res.data || null) as any
+    approveTaskList.value = orderData.value?.approveTaskList || []
+    branchTaskList.value = orderData.value?.branchTaskList || []
   } catch (error) {
     ElMessage.error('加载工单详情失败')
   } finally {
     loading.value = false
+  }
+}
+
+async function loadApproveProgress() {
+  try {
+    const res = await getApproveProgress(orderId)
+    approveProgress.value = (res.data || null) as ApproveProgress | null
+    if (approveProgress.value?.taskList?.length) {
+      approveTaskList.value = approveProgress.value.taskList
+      branchTaskList.value = approveProgress.value.branchTaskList || approveProgress.value.taskList.filter(task => task.taskType === '0')
+    }
+  } catch (error) {
+    console.error('加载审批进度失败:', error)
   }
 }
 
@@ -562,7 +621,7 @@ function getStatusClass(status: string | undefined) {
 function getStatusText(status: string | undefined) {
   if (!status) return '未知'
   const map: Record<string, string> = {
-    '0': '待派单', '1': '办理中', '2': '已上报',
+    '0': '待派单', '1': '待提交', '2': '审批中',
     '3': '已办结', '4': '已退回', '5': '已超期'
   }
   return map[status] || status
@@ -586,6 +645,11 @@ function getReviewTypeText(type: string | undefined) {
   if (!type) return ''
   const map: Record<string, string> = { '1': '派出所审核', '2': '县局审核', '3': '专员审核', '4': '领导审核' }
   return map[type] || type
+}
+
+function getApproveTaskStatusText(status: string | undefined) {
+  const map: Record<string, string> = { '0': '待审批', '1': '已通过', '2': '已驳回' }
+  return status ? (map[status] || status) : '未知'
 }
 
 function getOrderNoClass(order: XfWorkOrder | null) {
@@ -639,6 +703,7 @@ function formatFileSize(size: number | undefined) {
 
 onMounted(() => {
   loadOrderDetail()
+  loadApproveProgress()
   loadAssignRecords()
   loadReviewRecords()
   loadDossierList()

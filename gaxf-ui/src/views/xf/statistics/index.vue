@@ -16,7 +16,7 @@
           <LucideLoader :size="24" />
         </div>
         <div class="stat-info">
-          <span class="stat-label">办理中</span>
+          <span class="stat-label">待提交</span>
           <span class="stat-value">{{ overview.inProgressCount || 0 }}</span>
         </div>
       </div>
@@ -42,34 +42,42 @@
 
     <!-- 筛选条件 -->
     <div class="filter-bar">
-      <el-form :inline="true" :model="filterParams">
-        <el-form-item label="单位">
-          <el-tree-select
-            v-model="filterParams.deptId"
-            :data="deptTreeData"
-            :props="{ label: 'label', children: 'children' }"
-            node-key="id"
-            placeholder="请选择单位"
-            check-strictly
-            clearable
-            style="width: 220px"
-          />
-        </el-form-item>
-        <el-form-item label="时间范围">
-          <el-date-picker
-            v-model="timeRange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始"
-            end-placeholder="结束"
-            value-format="YYYY-MM-DD"
-            @change="handleTimeChange"
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="loadAllData">查询</el-button>
-          <el-button @click="handleResetFilter">重置</el-button>
-        </el-form-item>
+      <el-form :model="filterParams" class="filter-form">
+        <div class="filter-row">
+          <el-form-item label="单位">
+            <el-tree-select
+              v-model="filterParams.deptId"
+              :data="deptTreeData"
+              :props="{ label: 'label', children: 'children' }"
+              node-key="id"
+              placeholder="请选择单位"
+              check-strictly
+              clearable
+              style="width: 220px"
+            />
+          </el-form-item>
+          <el-form-item label="时间范围">
+            <el-date-picker
+              v-model="timeRange"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="YYYY-MM-DD"
+              @change="handleTimeChange"
+            />
+          </el-form-item>
+          <div class="filter-actions">
+            <button class="filter-btn primary" @click.prevent="loadAllData">
+              <LucideSearch :size="13" />
+              <span>查询</span>
+            </button>
+            <button class="filter-btn" @click.prevent="handleResetFilter">
+              <LucideRefreshCcw :size="13" />
+              <span>重置</span>
+            </button>
+          </div>
+        </div>
       </el-form>
     </div>
 
@@ -107,7 +115,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import * as echarts from 'echarts'
 import {
   LucideDatabase, LucideLoader, LucideAlertTriangle, LucideCheckCircle,
-  LucideBarChart3, LucidePieChart, LucideTrendingUp
+  LucideBarChart3, LucidePieChart, LucideTrendingUp, LucideSearch, LucideRefreshCcw
 } from 'lucide-vue-next'
 import { getOverview, getCompletionRate, getMonthlyTrend } from '@/api/xf/statistics'
 import { deptTree } from '@/api/system/dept'
@@ -185,11 +193,10 @@ async function loadDeptTree() {
   }
 }
 
-function loadAllData() {
-  loadOverview()
+async function loadAllData() {
+  await loadOverview()
   loadCompletionRate()
   loadMonthlyTrend()
-  // Pie chart uses overview data
   initPieChart()
 }
 
@@ -240,7 +247,7 @@ function initPieChart() {
 
   const data = [
     { value: overview.value.pendingCount, name: '待派单', itemStyle: { color: '#F59E0B' } },
-    { value: overview.value.inProgressCount, name: '办理中', itemStyle: { color: '#3B82F6' } },
+    { value: overview.value.inProgressCount, name: '待提交', itemStyle: { color: '#3B82F6' } },
     { value: overview.value.overdueCount, name: '已超期', itemStyle: { color: '#EF4444' } },
     { value: overview.value.completedCount, name: '已办结', itemStyle: { color: '#10B981' } },
     { value: overview.value.returnedCount, name: '已退回', itemStyle: { color: '#8B5CF6' } }
@@ -345,7 +352,7 @@ $police-text: #1E293B;
 $police-text-muted: #5B6E8C;
 
 .statistics-wrapper {
-  padding: 24px;
+  padding: 12px;
   background: $police-bg;
   min-height: 100%;
 }
@@ -353,18 +360,18 @@ $police-text-muted: #5B6E8C;
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  margin-bottom: 24px;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .stat-card {
   background: white;
-  border-radius: 20px;
-  padding: 20px;
+  border-radius: 12px;
+  padding: 16px;
   border: 1px solid $police-border;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   transition: all 0.2s;
 
   &:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); }
@@ -403,23 +410,89 @@ $police-text-muted: #5B6E8C;
 
 .filter-bar {
   background: white;
-  border-radius: 16px;
-  padding: 16px 24px;
+  border-radius: 12px;
+  padding: 12px 16px;
   border: 1px solid $police-border;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
+}
+
+.filter-form {
+  :deep(.el-form-item) {
+    margin-bottom: 0;
+    margin-right: 0;
+  }
+
+  :deep(.el-form-item__label) {
+    font-size: 12px;
+    color: $police-text-muted;
+    font-weight: 500;
+    padding-right: 8px;
+  }
+
+  :deep(.el-input__wrapper),
+  :deep(.el-select__wrapper),
+  :deep(.el-tree-select),
+  :deep(.el-date-editor.el-input__wrapper),
+  :deep(.el-range-editor.el-input__wrapper) {
+    border-radius: 6px;
+    background: white;
+    box-shadow: 0 0 0 1px #E2E8F0 inset;
+    transition: all 0.2s;
+    &:hover { box-shadow: 0 0 0 1px $police-light-blue inset; }
+    &.is-focus { box-shadow: 0 0 0 1px $police-blue inset !important; }
+  }
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid $police-border;
+  background: white;
+  color: $police-text;
+  cursor: pointer;
+  transition: all 0.2s;
+  height: 32px;
+  line-height: 1;
+
+  &:hover { border-color: $police-light-blue; color: $police-blue; }
+
+  &.primary {
+    background: linear-gradient(135deg, $police-primary 0%, $police-blue 100%);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+    &:hover { color: white; box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3); }
+  }
 }
 
 .charts-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-bottom: 24px;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .chart-card {
   background: white;
-  border-radius: 20px;
-  padding: 20px 24px;
+  border-radius: 12px;
+  padding: 16px 18px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
   border: 1px solid $police-border;
 

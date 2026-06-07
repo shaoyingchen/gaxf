@@ -1,4 +1,5 @@
 import type { PageDomain, BaseEntity } from "../common"
+import type { ApproveTask } from './approve'
 
 /** 工单信息 */
 export interface XfWorkOrder extends BaseEntity {
@@ -80,6 +81,16 @@ export interface XfWorkOrder extends BaseEntity {
   assignRecords?: XfAssignRecord[]
   /** 当前用户交办记录ID（myTodo查询使用） */
   assignId?: number
+  /** 最新审批实例ID */
+  approveInstanceId?: number
+  /** 审批状态 */
+  approveStatus?: string
+  /** 当前审批阶段 */
+  currentApproveStage?: number
+  /** 审批任务列表 */
+  approveTaskList?: ApproveTask[]
+  /** 承办单位首审任务列表 */
+  branchTaskList?: ApproveTask[]
 }
 
 /** 工单分页查询参数 */
@@ -119,6 +130,8 @@ export interface AssignParams {
   orderId: number
   /** 部门ID列表 */
   deptIds: number[]
+  /** 部门名称列表 */
+  deptNames?: string[]
   /** 办理期限 */
   deadline: string
 }

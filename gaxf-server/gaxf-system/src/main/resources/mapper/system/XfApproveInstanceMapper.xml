@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaxf.system.mapper.XfApproveInstanceMapper">
+
+    <resultMap id="XfApproveInstanceResult" type="com.gaxf.system.domain.XfApproveInstance">
+        <id property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="flowConfigId" column="flow_config_id"/>
+        <result property="flowName" column="flow_name"/>
+        <result property="applyDeptId" column="apply_dept_id"/>
+        <result property="applyDeptName" column="apply_dept_name"/>
+        <result property="currentStageNo" column="current_stage_no"/>
+        <result property="status" column="status"/>
+        <result property="startTime" column="start_time"/>
+        <result property="finishTime" column="finish_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap id="XfApproveTaskResult" type="com.gaxf.system.domain.XfApproveTask">
+        <id property="id" column="id"/>
+        <result property="instanceId" column="instance_id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="stageNo" column="stage_no"/>
+        <result property="stageName" column="stage_name"/>
+        <result property="taskType" column="task_type"/>
+        <result property="undertakeDeptId" column="undertake_dept_id"/>
+        <result property="undertakeDeptName" column="undertake_dept_name"/>
+        <result property="approveDeptId" column="approve_dept_id"/>
+        <result property="approveDeptName" column="approve_dept_name"/>
+        <result property="reviewerId" column="reviewer_id"/>
+        <result property="reviewerName" column="reviewer_name"/>
+        <result property="opinion" column="opinion"/>
+        <result property="status" column="status"/>
+        <result property="actionTime" column="action_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="orderTitle" column="order_title"/>
+        <result property="xfDemand" column="xf_demand"/>
+        <result property="xfCaseNo" column="xf_case_no"/>
+    </resultMap>
+
+    <select id="selectInstanceByOrderId" parameterType="Long" resultMap="XfApproveInstanceResult">
+        select id, order_id, flow_config_id, flow_name, apply_dept_id, apply_dept_name,
+               current_stage_no, status, start_time, finish_time,
+               create_by, create_time, update_by, update_time
+        from xf_approve_instance
+        where order_id = #{orderId}
+        order by id desc
+        limit 1
+    </select>
+
+    <select id="selectInstanceById" parameterType="Long" resultMap="XfApproveInstanceResult">
+        select id, order_id, flow_config_id, flow_name, apply_dept_id, apply_dept_name,
+               current_stage_no, status, start_time, finish_time,
+               create_by, create_time, update_by, update_time
+        from xf_approve_instance
+        where id = #{id}
+    </select>
+
+    <select id="selectTasksByInstanceId" parameterType="Long" resultMap="XfApproveTaskResult">
+        select id, instance_id, order_id, stage_no, stage_name, task_type, undertake_dept_id, undertake_dept_name,
+               approve_dept_id, approve_dept_name, reviewer_id, reviewer_name, opinion, status, action_time,
+               create_by, create_time, update_by, update_time
+        from xf_approve_task
+        where instance_id = #{instanceId}
+        order by stage_no asc, id asc
+    </select>
+
+    <select id="selectMyPendingTasks" resultMap="XfApproveTaskResult">
+        select t.id, t.instance_id, t.order_id, t.stage_no, t.stage_name, t.task_type,
+               t.undertake_dept_id, t.undertake_dept_name, t.approve_dept_id, t.approve_dept_name,
+               t.reviewer_id, t.reviewer_name, t.opinion, t.status, t.action_time,
+               t.create_by, t.create_time, t.update_by, t.update_time,
+               w.title as order_title, w.xf_demand, w.xf_case_no
+        from xf_approve_task t
+        left join xf_work_order w on w.id = t.order_id
+        inner join xf_assign_record ar on ar.order_id = t.order_id
+            and ar.assign_dept_id = t.undertake_dept_id
+            and ar.status = '2'
+            and ar.report_time is not null
+            and ar.report_content is not null
+            and ar.report_content != ''
+        where t.approve_dept_id = #{deptId} and t.status = '0'
+        order by t.create_time desc, t.id desc
+    </select>
+
+    <select id="selectMyHandledTasks" resultMap="XfApproveTaskResult">
+        select t.id, t.instance_id, t.order_id, t.stage_no, t.stage_name, t.task_type,
+               t.undertake_dept_id, t.undertake_dept_name, t.approve_dept_id, t.approve_dept_name,
+               t.reviewer_id, t.reviewer_name, t.opinion, t.status, t.action_time,
+               t.create_by, t.create_time, t.update_by, t.update_time,
+               w.title as order_title, w.xf_demand, w.xf_case_no
+        from xf_approve_task t
+        left join xf_work_order w on w.id = t.order_id
+        where t.approve_dept_id = #{deptId} and t.status in ('1', '2')
+        order by t.action_time desc, t.id desc
+    </select>
+
+    <select id="selectTaskById" parameterType="Long" resultMap="XfApproveTaskResult">
+        select id, instance_id, order_id, stage_no, stage_name, task_type, undertake_dept_id, undertake_dept_name,
+               approve_dept_id, approve_dept_name, reviewer_id, reviewer_name, opinion, status, action_time,
+               create_by, create_time, update_by, update_time
+        from xf_approve_task
+        where id = #{id}
+    </select>
+
+    <select id="selectPendingTasksByInstanceAndApproveDept" resultMap="XfApproveTaskResult">
+        select t.id, t.instance_id, t.order_id, t.stage_no, t.stage_name, t.task_type, t.undertake_dept_id, t.undertake_dept_name,
+               t.approve_dept_id, t.approve_dept_name, t.reviewer_id, t.reviewer_name, t.opinion, t.status, t.action_time,
+               t.create_by, t.create_time, t.update_by, t.update_time
+        from xf_approve_task t
+        inner join xf_assign_record ar on ar.order_id = t.order_id
+            and ar.assign_dept_id = t.undertake_dept_id
+            and ar.status = '2'
+            and ar.report_time is not null
+            and ar.report_content is not null
+            and ar.report_content != ''
+        where t.instance_id = #{instanceId}
+          and t.approve_dept_id = #{approveDeptId}
+          and t.status = '0'
+        order by t.undertake_dept_id asc, t.stage_no asc, t.id asc
+    </select>
+
+    <insert id="insertXfApproveInstance" parameterType="com.gaxf.system.domain.XfApproveInstance" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_approve_instance(
+            order_id, flow_config_id, flow_name, apply_dept_id, apply_dept_name,
+            current_stage_no, status, start_time, finish_time, create_by, create_time
+        ) values (
+            #{orderId}, #{flowConfigId}, #{flowName}, #{applyDeptId}, #{applyDeptName},
+            #{currentStageNo}, #{status}, #{startTime}, #{finishTime}, #{createBy}, sysdate()
+        )
+    </insert>
+
+    <insert id="batchInsertApproveTasks">
+        insert into xf_approve_task(
+            instance_id, order_id, stage_no, stage_name, task_type, undertake_dept_id, undertake_dept_name,
+            approve_dept_id, approve_dept_name, reviewer_id, reviewer_name, opinion, status, action_time, create_by, create_time
+        ) values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.instanceId}, #{item.orderId}, #{item.stageNo}, #{item.stageName}, #{item.taskType}, #{item.undertakeDeptId}, #{item.undertakeDeptName},
+             #{item.approveDeptId}, #{item.approveDeptName}, #{item.reviewerId}, #{item.reviewerName}, #{item.opinion}, #{item.status}, #{item.actionTime}, #{item.createBy}, sysdate())
+        </foreach>
+    </insert>
+
+    <update id="updateApproveTask" parameterType="com.gaxf.system.domain.XfApproveTask">
+        update xf_approve_task
+        <set>
+            <if test="reviewerId != null">reviewer_id = #{reviewerId},</if>
+            <if test="reviewerName != null and reviewerName != ''">reviewer_name = #{reviewerName},</if>
+            <if test="opinion != null">opinion = #{opinion},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="actionTime != null">action_time = #{actionTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateApproveInstance" parameterType="com.gaxf.system.domain.XfApproveInstance">
+        update xf_approve_instance
+        <set>
+            <if test="currentStageNo != null">current_stage_no = #{currentStageNo},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="finishTime != null">finish_time = #{finishTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="countStagePendingTasks" resultType="int">
+        select count(1)
+        from xf_approve_task
+        where instance_id = #{instanceId}
+          and stage_no = #{stageNo}
+          and status = '0'
+    </select>
+
+    <select id="countStageRejectedTasks" resultType="int">
+        select count(1)
+        from xf_approve_task
+        where instance_id = #{instanceId}
+          and stage_no = #{stageNo}
+          and status = '2'
+    </select>
+
+    <select id="countInstanceUndertakeDept" resultType="int">
+        select count(distinct undertake_dept_id)
+        from xf_approve_task
+        where instance_id = #{instanceId}
+          and undertake_dept_id is not null
+    </select>
+
+    <select id="countPendingUndertakeDeptByApproveDept" resultType="int">
+        select count(distinct t.undertake_dept_id)
+        from xf_approve_task t
+        inner join xf_assign_record ar on ar.order_id = t.order_id
+            and ar.assign_dept_id = t.undertake_dept_id
+            and ar.status = '2'
+            and ar.report_time is not null
+            and ar.report_content is not null
+            and ar.report_content != ''
+        where t.instance_id = #{instanceId}
+          and t.approve_dept_id = #{approveDeptId}
+          and t.status = '0'
+          and t.undertake_dept_id is not null
+    </select>
+</mapper>

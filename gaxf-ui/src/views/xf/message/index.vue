@@ -194,17 +194,17 @@ $police-border: #E2E8F0;
 $police-text: #1E293B;
 $police-text-muted: #64748B;
 
-.message-wrapper { padding: 24px; background: $police-bg; min-height: calc(100vh - 48px); }
+.message-wrapper { padding: 0; background: $police-bg; min-height: calc(100vh - 48px); }
 
 .main-card {
-  background: white; border-radius: 20px; border: 1px solid $police-border;
-  overflow: hidden; box-shadow: 0 4px 20px rgba(30, 58, 138, 0.08);
+  background: white; border-radius: 12px; border: 1px solid $police-border;
+  overflow: hidden; box-shadow: 0 2px 12px rgba(30, 58, 138, 0.06);
   display: flex; flex-direction: column;
 }
 
 .card-header {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 20px 24px; background: linear-gradient(135deg, $police-primary 0%, $police-blue 100%);
+  padding: 16px 18px; background: linear-gradient(135deg, $police-primary 0%, $police-blue 100%);
   color: white; flex-shrink: 0;
 }
 
@@ -232,7 +232,7 @@ $police-text-muted: #64748B;
 }
 
 .filter-section {
-  padding: 12px 24px; border-bottom: 1px solid $police-border;
+  padding: 12px 16px; border-bottom: 1px solid $police-border;
   background: #F8FAFE;
 }
 
@@ -248,7 +248,7 @@ $police-text-muted: #64748B;
 }
 
 .message-list {
-  padding: 16px 24px; flex: 1; overflow-y: auto;
+  padding: 12px 0 0; flex: 1; overflow-y: auto;
 }
 
 .message-item {
@@ -321,7 +321,7 @@ $police-text-muted: #64748B;
 
 .pagination-section {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 16px 24px; background: #F8FAFE; border-top: 1px solid $police-border; flex-shrink: 0;
+  padding: 12px 16px; background: #F8FAFE; border-top: 1px solid $police-border; flex-shrink: 0;
   .page-stats { font-size: 13px; color: $police-text-muted; strong { color: $police-text; } }
 }
 </style>

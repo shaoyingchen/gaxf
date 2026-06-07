@@ -14,13 +14,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.gaxf.common.exception.ServiceException;
 import com.gaxf.common.utils.DateUtils;
+import com.gaxf.common.utils.SecurityUtils;
 import com.gaxf.common.utils.StringUtils;
+import com.gaxf.system.domain.XfApproveTask;
 import com.gaxf.system.domain.XfAssignRecord;
 import com.gaxf.system.domain.XfMessage;
 import com.gaxf.system.domain.XfWorkOrder;
+import com.gaxf.system.domain.vo.XfApproveProgressVO;
 import com.gaxf.system.mapper.XfAssignRecordMapper;
 import com.gaxf.system.mapper.XfMessageMapper;
 import com.gaxf.system.mapper.XfWorkOrderMapper;
+import com.gaxf.system.service.IXfApproveRuntimeService;
 import com.gaxf.system.service.IXfWorkOrderService;
 
 /**
@@ -45,6 +49,9 @@ public class XfWorkOrderServiceImpl implements IXfWorkOrderService
     @Autowired
     private XfMessageMapper xfMessageMapper;
 
+    @Autowired
+    private IXfApproveRuntimeService xfApproveRuntimeService;
+
     /**
      * 查询信访工单信息
      */
@@ -56,6 +63,15 @@ public class XfWorkOrderServiceImpl implements IXfWorkOrderService
         {
             List<XfAssignRecord> assignRecords = xfAssignRecordMapper.selectXfAssignRecordByOrderId(id);
             workOrder.setAssignRecords(assignRecords);
+            XfApproveProgressVO progressVO = xfApproveRuntimeService.selectProgressByOrderId(id);
+            if (progressVO != null)
+            {
+                workOrder.setApproveInstanceId(progressVO.getInstanceId());
+                workOrder.setApproveStatus(progressVO.getStatus());
+                workOrder.setCurrentApproveStage(progressVO.getCurrentStageNo());
+                workOrder.setApproveTaskList(progressVO.getTaskList());
+                workOrder.setBranchTaskList(progressVO.getBranchTaskList());
+            }
         }
         return workOrder;
     }
@@ -125,14 +141,19 @@ public class XfWorkOrderServiceImpl implements IXfWorkOrderService
         {
             throw new ServiceException("只有待派单状态的工单才能交办");
         }
-        XfWorkOrder updateOrder = new XfWorkOrder();
-        updateOrder.setId(orderId);
-        updateOrder.setStatus("1");
+        if (deptIds == null || deptIds.length == 0)
+        {
+            throw new ServiceException("请选择至少一个承办单位");
+        }
         if (StringUtils.isNotEmpty(deadline))
         {
-            updateOrder.setDeadline(DateUtils.parseDate(deadline));
+            XfWorkOrder deadlineUpdate = new XfWorkOrder();
+            deadlineUpdate.setId(orderId);
+            deadlineUpdate.setDeadline(DateUtils.parseDate(deadline));
+            xfWorkOrderMapper.updateXfWorkOrder(deadlineUpdate);
         }
-        xfWorkOrderMapper.updateXfWorkOrder(updateOrder);
+
+        xfApproveRuntimeService.startAssignApprove(orderId, deptIds, deptNames, SecurityUtils.getUsername());
 
         for (int i = 0; i < deptIds.length; i++)
         {
@@ -183,16 +204,16 @@ public class XfWorkOrderServiceImpl implements IXfWorkOrderService
             total += count;
             switch (status)
             {
-                case "0": result.put("waitAssign", count); break;
-                case "1": result.put("handling", count); break;
-                case "2": result.put("reported", count); break;
-                case "3": result.put("finished", count); break;
-                case "4": result.put("returned", count); break;
-                case "5": result.put("overdue", count); break;
+                case "0": result.put("pendingCount", count); break;
+                case "1": result.put("inProgressCount", count); break;
+                case "2": result.put("reportedCount", count); break;
+                case "3": result.put("completedCount", count); break;
+                case "4": result.put("returnedCount", count); break;
+                case "5": result.put("overdueCount", count); break;
                 default: break;
             }
         }
-        result.put("total", total);
+        result.put("totalCount", total);
         return result;
     }
 
@@ -399,5 +420,14 @@ public class XfWorkOrderServiceImpl implements IXfWorkOrderService
     private String generateOrderNo()
     {
         return "XF" + DateUtils.dateTimeNow("yyyyMMddHHmmss") + String.format("%03d", (int) (Math.random() * 1000));
+    }
+
+    /**
+     * 查询月度趋势统计数据
+     */
+    @Override
+    public List<Map<String, Object>> selectMonthlyTrend()
+    {
+        return xfWorkOrderMapper.selectMonthlyTrend();
     }
 }
